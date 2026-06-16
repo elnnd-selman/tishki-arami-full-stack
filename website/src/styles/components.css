@@ -893,3 +893,42 @@
   .story-panel-content { opacity: 1; transform: none; }
   .story-hud { display: none; }
 }
+
+/* ---------- 3D scroll-story (WebGL) ---------- */
+.story3d { position: relative; height: 400vh; }
+.story3d-pin {
+  position: sticky; top: 0;
+  height: 100svh; overflow: hidden;
+  background: #0a0f1e;
+}
+.story3d-canvas { position: absolute !important; inset: 0; display: block; }
+.story3d-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  padding: 0 24px 40px; text-align: center; pointer-events: none;
+}
+.story3d .story-kicker {
+  margin-top: calc(var(--header-h) + 28px); margin-bottom: auto;
+  pointer-events: auto;
+}
+.story3d-card {
+  max-width: 640px; color: #fff;
+  animation: storyIn 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes storyIn { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+.story3d-card h2 {
+  font-size: 54px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.04;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.55);
+}
+.story3d-card p {
+  margin: 16px auto 0; max-width: 540px;
+  font-size: 18px; line-height: 1.7; color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+}
+.story3d-card .story-actions { pointer-events: auto; }
+.story3d .story-dots { margin-top: 26px; pointer-events: auto; }
+
+@media (max-width: 860px) {
+  .story3d-card h2 { font-size: 34px; }
+  .story3d-card p { font-size: 15px; }
+}

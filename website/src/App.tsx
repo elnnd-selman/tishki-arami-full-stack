@@ -1,7 +1,13 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/HomePage';
-import { ExperiencePage } from './pages/ExperiencePage';
+import { Loader } from './components/Spinner';
+
+// 3D experience pulls in three.js — load it only when the route is visited.
+const ExperiencePage = lazy(() =>
+  import('./pages/ExperiencePage').then((m) => ({ default: m.ExperiencePage })),
+);
 import { ProductsPage } from './pages/ProductsPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { CategoriesPage } from './pages/CategoriesPage';
@@ -20,7 +26,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
-        <Route path="experience" element={<ExperiencePage />} />
+        <Route path="experience" element={<Suspense fallback={<Loader />}><ExperiencePage /></Suspense>} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="products/:slug" element={<ProductDetailPage />} />
         <Route path="categories" element={<CategoriesPage />} />
