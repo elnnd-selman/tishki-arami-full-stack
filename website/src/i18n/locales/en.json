@@ -13,7 +13,8 @@
     "projects": "Projects",
     "blog": "Blog",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "experience": "3D Tour"
   },
   "lang": {
     "label": "Language"
@@ -185,5 +186,18 @@
     "title": "Page not found",
     "text": "The page you are looking for does not exist.",
     "home": "Back to home"
+  },
+  "story": {
+    "badge": "Interactive",
+    "kicker": "How we save a building from fire",
+    "step1Title": "When every second counts",
+    "step1Text": "Trained crews and certified equipment, ready to respond the moment fire breaks out.",
+    "step2Title": "Fire spreads in minutes",
+    "step2Text": "An unprotected building can be lost in minutes — detection and suppression change everything.",
+    "step3Title": "We protect what matters",
+    "step3Text": "From early detection to fast suppression, TishkiArami keeps your people and property safe.",
+    "browse": "Browse products",
+    "contact": "Get a quote",
+    "scroll": "Scroll to explore"
   }
 }

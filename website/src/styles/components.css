@@ -789,3 +789,107 @@
   .product-body { padding: 13px; }
   .section { padding: 52px 0; }
 }
+
+/* ---------- 3D scroll-story page (Experience) ---------- */
+.nav-3d { position: relative; }
+.nav-3d-badge {
+  font-size: 9px; font-weight: 900; letter-spacing: 0.04em;
+  background: #fff; color: var(--accent);
+  border-radius: 5px; padding: 2px 5px; line-height: 1;
+}
+
+.story { position: relative; }
+.story-pin {
+  position: sticky; top: 0;
+  height: 100svh; overflow: hidden;
+  background: var(--slate-900);
+}
+.story-track {
+  display: flex; height: 100%;
+  width: 300vw; direction: ltr;
+  will-change: transform;
+  transition: transform 0.12s linear;
+}
+.story-panel {
+  position: relative; flex: 0 0 100vw; width: 100vw; height: 100%;
+  display: grid; place-items: center; overflow: hidden;
+}
+.story-panel-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  transform: scale(1.12);
+  transition: transform 1.4s ease;
+}
+.story-panel.is-active .story-panel-bg { transform: scale(1); }
+.story-panel-scrim { position: absolute; inset: 0; background-color: rgba(8,12,24,0.6); }
+.story-panel.tone-red .story-panel-scrim { background-color: rgba(38,8,6,0.5); }
+.story-panel.tone-blue .story-panel-scrim { background-color: rgba(8,16,40,0.62); }
+
+.story-panel-content {
+  position: relative; z-index: 2;
+  max-width: 760px; padding: 0 24px; text-align: center; color: #fff;
+  opacity: 0; transform: translateY(34px);
+  transition: opacity 0.7s ease 0.15s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s;
+}
+.story-panel.is-active .story-panel-content { opacity: 1; transform: translateY(0); }
+.story-step-no { font-size: 13px; font-weight: 800; letter-spacing: 0.22em; color: rgba(255,255,255,0.6); }
+.story-icon {
+  display: grid; place-items: center;
+  width: 64px; height: 64px; margin: 18px auto 22px;
+  border-radius: 50%; color: #fff;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(6px);
+}
+.story-panel.tone-blue .story-icon { color: var(--blue-300); }
+.story-panel.tone-red .story-icon { color: #fca5a5; }
+.story-panel-content h2 {
+  font-size: 64px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.03;
+  text-shadow: 0 2px 28px rgba(0,0,0,0.45);
+}
+.story-panel-content p {
+  margin: 20px auto 0; max-width: 600px;
+  font-size: 19px; line-height: 1.7; color: rgba(255,255,255,0.85);
+}
+.story-actions { margin-top: 34px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+.story-hud {
+  position: absolute; inset-inline: 0; bottom: 28px; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  pointer-events: none;
+}
+.story-kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.82);
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
+  padding: 8px 18px; border-radius: var(--pill); backdrop-filter: blur(6px);
+}
+.story-dots { display: flex; gap: 10px; pointer-events: auto; }
+.story-dot {
+  width: 38px; height: 5px; padding: 0; border: none; cursor: pointer;
+  border-radius: var(--pill); background: rgba(255,255,255,0.25);
+  transition: background 0.25s, width 0.25s;
+}
+.story-dot.active { background: var(--accent); width: 56px; }
+
+/* Stacked fallback: small screens OR reduced motion */
+@media (max-width: 860px) {
+  .story { height: auto !important; }
+  .story-pin { position: static; height: auto; }
+  .story-track { width: 100%; flex-direction: column; transform: none !important; }
+  .story-panel { width: 100%; flex: none; min-height: 88svh; }
+  .story-panel-bg { transform: none; }
+  .story-panel-content { opacity: 1; transform: none; }
+  .story-panel-content h2 { font-size: 38px; }
+  .story-panel-content p { font-size: 16px; }
+  .story-hud { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .story { height: auto !important; }
+  .story-pin { position: static; height: auto; }
+  .story-track { width: 100%; flex-direction: column; transform: none !important; }
+  .story-panel { width: 100%; flex: none; min-height: 88svh; }
+  .story-panel-bg { transform: none; }
+  .story-panel-content { opacity: 1; transform: none; }
+  .story-hud { display: none; }
+}

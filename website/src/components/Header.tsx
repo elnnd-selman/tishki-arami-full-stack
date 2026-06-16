@@ -45,6 +45,10 @@ export function Header() {
 
         <div className="header-actions">
           <LanguageSwitcher />
+          <Link to="/experience" className="btn btn-accent btn-sm nav-3d">
+            <span className="nav-3d-badge">3D</span>
+            {t('nav.experience')}
+          </Link>
           <Link to="/contact" className="btn btn-primary btn-sm">
             {t('nav.contact')}
           </Link>
@@ -70,7 +74,7 @@ export function Header() {
                 <IconClose />
               </button>
             </div>
-            {NAV.concat({ to: '/contact', key: 'nav.contact' }).map((n) => (
+            {NAV.concat([{ to: '/experience', key: 'nav.experience' }, { to: '/contact', key: 'nav.contact' }]).map((n) => (
               <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                 {t(n.key)}
               </NavLink>
