@@ -35,15 +35,35 @@ export function HandControl({ onState }: { onState: (s: HandState) => void }) {
     let stream: MediaStream | undefined;
     let raf = 0;
     let stopped = false;
+    let lastTs = -1;
+
+    const makeLandmarker = async () => {
+      const fileset = await FilesetResolver.forVisionTasks(WASM);
+      const opts = {
+        baseOptions: { modelAssetPath: MODEL },
+        runningMode: 'VIDEO' as const,
+        numHands: 1,
+        minHandDetectionConfidence: 0.4,
+        minHandPresenceConfidence: 0.4,
+        minTrackingConfidence: 0.4,
+      };
+      try {
+        return await HandLandmarker.createFromOptions(fileset, {
+          ...opts,
+          baseOptions: { ...opts.baseOptions, delegate: 'GPU' as const },
+        });
+      } catch {
+        // Some machines/browsers can't init the GPU delegate — fall back to CPU.
+        return await HandLandmarker.createFromOptions(fileset, {
+          ...opts,
+          baseOptions: { ...opts.baseOptions, delegate: 'CPU' as const },
+        });
+      }
+    };
 
     (async () => {
       try {
-        const fileset = await FilesetResolver.forVisionTasks(WASM);
-        landmarker = await HandLandmarker.createFromOptions(fileset, {
-          baseOptions: { modelAssetPath: MODEL, delegate: 'GPU' },
-          runningMode: 'VIDEO',
-          numHands: 1,
-        });
+        landmarker = await makeLandmarker();
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
         const v = videoRef.current;
         if (!v) return;
@@ -52,10 +72,15 @@ export function HandControl({ onState }: { onState: (s: HandState) => void }) {
         setStatus('Show your hand');
 
         const loop = () => {
-          if (stopped || !landmarker || !videoRef.current) return;
+          if (stopped) return;
+          raf = requestAnimationFrame(loop); // schedule first so a frame error can't kill the loop
           const vid = videoRef.current;
-          if (vid.readyState >= 2) {
-            const res = landmarker.detectForVideo(vid, performance.now());
+          if (!landmarker || !vid || vid.readyState < 2) return;
+          let ts = performance.now();
+          if (ts <= lastTs) ts = lastTs + 1;
+          lastTs = ts;
+          try {
+            const res = landmarker.detectForVideo(vid, ts);
             if (res.landmarks && res.landmarks.length > 0) {
               const open = handIsOpen(res.landmarks[0]);
               onState(open ? 'open' : 'closed');
@@ -66,8 +91,9 @@ export function HandControl({ onState }: { onState: (s: HandState) => void }) {
               setStatus('Show your hand');
               setTone('wait');
             }
+          } catch {
+            // occasional per-frame errors are non-fatal — keep looping
           }
-          raf = requestAnimationFrame(loop);
         };
         raf = requestAnimationFrame(loop);
       } catch {
