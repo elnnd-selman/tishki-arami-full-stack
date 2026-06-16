@@ -977,3 +977,37 @@
   .s3-chip { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 3px; }
   .s3-chip-label { font-size: 12px; }
 }
+
+/* ---------- Hand-gesture control (camera) ---------- */
+.s3-handbtn {
+  position: absolute; top: 28px; inset-inline-end: 48px; pointer-events: auto;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 18px; border-radius: var(--pill);
+  background: rgba(9,13,26,0.6); border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
+  backdrop-filter: blur(10px); transition: all 0.2s;
+}
+.s3-handbtn:hover { border-color: rgba(255,255,255,0.45); }
+.s3-handbtn.active { background: var(--accent); border-color: var(--accent); }
+.hand-cam {
+  position: absolute; top: 82px; inset-inline-end: 48px; width: 220px; pointer-events: auto;
+  border-radius: var(--radius); overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 16px 40px rgba(0,0,0,0.5); background: #000;
+}
+.hand-cam-video { width: 100%; height: 150px; object-fit: cover; transform: scaleX(-1); display: block; }
+.hand-cam-status {
+  display: block; padding: 8px 12px; text-align: center;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.04em; color: #fff; background: rgba(9,13,26,0.85);
+}
+.hand-cam-status.tone-fire { color: #fca5a5; }
+.hand-cam-status.tone-safe { color: #86efac; }
+.hand-cam-status.tone-wait { color: rgba(255,255,255,0.7); }
+@media (max-width: 860px) {
+  .s3-handbtn { top: 14px; inset-inline-end: 14px; padding: 9px 14px; font-size: 12px; }
+  .hand-cam { top: 58px; inset-inline-end: 14px; width: 150px; }
+  .hand-cam-video { height: 108px; }
+}
+
+/* ---------- 3D hero backdrop ---------- */
+.hero-canvas { position: absolute !important; inset: 0; z-index: -2; display: block; }
+.hero--3d .hero-scrim { background-color: rgba(8, 12, 24, 0.5); }

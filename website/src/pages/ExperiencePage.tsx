@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Canvas } from '@react-three/fiber';
 import { FireStoryScene } from '../components/FireStoryScene';
+import { HandControl, type HandState } from '../components/HandControl';
 import { IconArrowRight, IconClock, IconShield, IconCheck } from '../components/Icons';
 
 /**
@@ -20,7 +21,10 @@ export function ExperiencePage() {
   const { t } = useTranslation();
   const wrapRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
+  const targetRef = useRef(0);
+  const handModeRef = useRef(false);
   const [active, setActive] = useState(0);
+  const [handMode, setHandMode] = useState(false);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -28,6 +32,7 @@ export function ExperiencePage() {
     let raf = 0;
     const update = () => {
       raf = 0;
+      if (handModeRef.current) return; // hand gesture drives progress instead
       const rect = wrap.getBoundingClientRect();
       const scrollable = wrap.offsetHeight - window.innerHeight;
       const p = scrollable > 0 ? Math.min(Math.max(-rect.top / scrollable, 0), 1) : 0;
@@ -43,6 +48,27 @@ export function ExperiencePage() {
       window.removeEventListener('resize', onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
+  }, []);
+
+  // While hand mode is on, smoothly ease progress toward the gesture target.
+  useEffect(() => {
+    handModeRef.current = handMode;
+    if (!handMode) return;
+    targetRef.current = progressRef.current;
+    let raf = 0;
+    const tick = () => {
+      progressRef.current += (targetRef.current - progressRef.current) * 0.07;
+      setActive(Math.round(progressRef.current * (STEPS.length - 1)));
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [handMode]);
+
+  // open hand -> fire (mid), closed fist -> safe (end)
+  const onHand = useCallback((s: HandState) => {
+    if (s === 'open') targetRef.current = 0.5;
+    else if (s === 'closed') targetRef.current = 1;
   }, []);
 
   const goTo = (i: number) => {
@@ -73,6 +99,16 @@ export function ExperiencePage() {
             <span className="s3-lead"><span className="hero-badge-dot" /> {t('story.lead')}</span>
             <span className="s3-kicker">{t('story.kicker')}</span>
           </div>
+
+          {/* hand-gesture control */}
+          <button
+            type="button"
+            className={`s3-handbtn ${handMode ? 'active' : ''}`}
+            onClick={() => setHandMode((v) => !v)}
+          >
+            {handMode ? t('story.handStop', { defaultValue: 'Stop camera' }) : t('story.handStart', { defaultValue: 'Control with hand' })}
+          </button>
+          {handMode && <HandControl onState={onHand} />}
 
           {/* content panel */}
           <div className="s3-panel">
