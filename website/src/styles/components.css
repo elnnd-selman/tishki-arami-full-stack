@@ -944,27 +944,33 @@
 
 .s3-rail {
   position: absolute; inset-inline: 48px; bottom: 44px;
-  display: flex; gap: 14px; pointer-events: auto;
+  display: flex; gap: 12px; pointer-events: auto;
 }
 .s3-chip {
-  flex: 1; max-width: 230px;
+  flex: 0 0 auto; min-width: 184px;
   display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px; border-radius: var(--radius);
-  background: rgba(9,13,26,0.6); border: 1px solid rgba(255,255,255,0.16);
-  color: rgba(255,255,255,0.72); cursor: pointer; text-align: start;
-  backdrop-filter: blur(10px); transition: all 0.25s; position: relative; overflow: hidden;
+  padding: 11px 18px 11px 12px; border-radius: var(--pill);
+  background: rgba(9,13,26,0.55); border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6); cursor: pointer; text-align: start;
+  backdrop-filter: blur(10px); transition: all 0.25s;
 }
-.s3-chip::after {
-  content: ''; position: absolute; inset-inline-start: 0; bottom: 0;
-  height: 3px; width: 100%; background: var(--accent);
-  transform: scaleX(0); transform-origin: left; transition: transform 0.4s;
+.s3-chip:hover { border-color: rgba(255,255,255,0.28); color: rgba(255,255,255,0.85); }
+/* circular step number badge */
+.s3-chip-no {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 900; letter-spacing: -0.02em;
+  background: rgba(255,255,255,0.1); color: #fff; transition: all 0.25s;
 }
-.s3-chip.active { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.34); color: #fff; }
-.s3-chip.active::after, .s3-chip.done::after { transform: scaleX(1); }
-.s3-chip.done { color: rgba(255,255,255,0.88); }
-.s3-chip-no { font-size: 18px; font-weight: 900; color: #fff; opacity: 0.5; }
-.s3-chip.active .s3-chip-no { opacity: 1; color: #f87171; }
-.s3-chip-label { font-size: 14px; font-weight: 700; }
+.s3-chip-label { font-size: 14px; font-weight: 700; transition: color 0.25s; }
+/* done = filled red badge; active = blue ring + glow */
+.s3-chip.done .s3-chip-no { background: var(--accent); color: #fff; }
+.s3-chip.done { color: rgba(255,255,255,0.85); }
+.s3-chip.active {
+  background: rgba(37,99,235,0.16); border-color: var(--blue-500);
+  color: #fff; box-shadow: 0 0 0 1px var(--blue-500), 0 12px 30px rgba(37,99,235,0.3);
+}
+.s3-chip.active .s3-chip-no { background: var(--blue-600); color: #fff; }
 
 @media (max-width: 860px) {
   .s3-top { inset-inline-start: 18px; top: 16px; }
@@ -974,7 +980,8 @@
   .s3-panel h2 { font-size: 26px; }
   .s3-panel p { font-size: 14px; }
   .s3-rail { inset-inline: 12px; bottom: 14px; gap: 8px; }
-  .s3-chip { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 3px; }
+  .s3-chip { min-width: 0; flex: 1; padding: 8px 10px 8px 8px; gap: 8px; }
+  .s3-chip-no { width: 26px; height: 26px; font-size: 11px; }
   .s3-chip-label { font-size: 12px; }
 }
 
