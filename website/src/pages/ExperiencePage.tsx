@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Canvas } from '@react-three/fiber';
@@ -20,26 +20,27 @@ const STEPS = [
 /** Animated reveal: letter-by-letter for LTR, word-by-word for RTL (so Arabic /
  *  Kurdish letters stay joined). Re-mounts via `key` so it replays per chapter. */
 function RevealText({ text, rtl }: { text: string; rtl: boolean }) {
-  if (rtl) {
-    const words = text.split(' ');
-    return (
-      <>
-        {words.map((w, i) => (
-          <span key={i} className="s3-word" style={{ animationDelay: `${i * 0.09}s` }}>
-            {w}
-            {i < words.length - 1 ? ' ' : ''}
-          </span>
-        ))}
-      </>
-    );
-  }
+  const words = text.split(' ');
+  let charIndex = 0;
   return (
     <>
-      {[...text].map((ch, i) => (
-        <span key={i} className="s3-char" style={{ animationDelay: `${i * 0.028}s` }}>
-          {ch === ' ' ? ' ' : ch}
-        </span>
-      ))}
+      {words.map((word, wi) => {
+        const inner = rtl ? (
+          <span className="s3-piece" style={{ animationDelay: `${wi * 0.09}s` }}>{word}</span>
+        ) : (
+          [...word].map((ch, ci) => (
+            <span key={ci} className="s3-piece" style={{ animationDelay: `${charIndex++ * 0.028}s` }}>
+              {ch}
+            </span>
+          ))
+        );
+        return (
+          <Fragment key={wi}>
+            <span className="s3-word">{inner}</span>
+            {wi < words.length - 1 ? <span className="s3-space">&nbsp;</span> : null}
+          </Fragment>
+        );
+      })}
     </>
   );
 }

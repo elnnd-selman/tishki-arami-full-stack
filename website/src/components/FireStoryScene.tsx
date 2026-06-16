@@ -29,6 +29,76 @@ function makeSprite() {
   return new THREE.CanvasTexture(c);
 }
 
+// A facade texture (grid of lit/unlit windows) for the background skyline.
+function makeFacade(seed: number) {
+  const c = document.createElement('canvas');
+  c.width = 64;
+  c.height = 128;
+  const ctx = c.getContext('2d')!;
+  ctx.fillStyle = '#0b1322';
+  ctx.fillRect(0, 0, 64, 128);
+  const cols = 4;
+  const rows = 11;
+  const m = 5;
+  const gw = (64 - m * (cols + 1)) / cols;
+  const gh = (128 - m * (rows + 1)) / rows;
+  // deterministic-ish per seed so it doesn't reshuffle every render
+  let n = seed * 9301 + 49297;
+  const rnd = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
+  for (let r = 0; r < rows; r++) {
+    for (let col = 0; col < cols; col++) {
+      ctx.fillStyle = rnd() > 0.45 ? '#c7d8ff' : '#141d33';
+      ctx.fillRect(m + col * (gw + m), m + r * (gh + m), gw, gh);
+    }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+// Background skyline of simpler lit buildings surrounding the hero tower.
+function City() {
+  const texes = useMemo(() => [makeFacade(3), makeFacade(11), makeFacade(27), makeFacade(53)], []);
+  const buildings = useMemo(() => {
+    const arr: { x: number; z: number; w: number; h: number; d: number; ry: number; t: number }[] = [];
+    let n = 12345;
+    const rnd = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
+    for (let i = 0; i < 22; i++) {
+      const ang = (i / 22) * Math.PI * 2 + rnd() * 0.5;
+      const rad = 7.5 + rnd() * 11;
+      arr.push({
+        x: Math.cos(ang) * rad,
+        z: Math.sin(ang) * rad,
+        w: 1.2 + rnd() * 1.9,
+        h: 2 + rnd() * 7,
+        d: 1.2 + rnd() * 1.9,
+        ry: rnd() * 0.8,
+        t: i % texes.length,
+      });
+    }
+    return arr;
+  }, [texes.length]);
+
+  return (
+    <group>
+      {buildings.map((b, i) => (
+        <mesh key={i} position={[b.x, b.h / 2, b.z]} rotation={[0, b.ry, 0]} castShadow>
+          <boxGeometry args={[b.w, b.h, b.d]} />
+          <meshStandardMaterial
+            map={texes[b.t]}
+            emissiveMap={texes[b.t]}
+            emissive="#9fc0ff"
+            emissiveIntensity={0.45}
+            color="#0e1626"
+            roughness={0.7}
+            metalness={0.25}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 // Tower geometry constants (a two-tier modern skyscraper).
 const PODIUM = { w: 3.0, h: 0.7, d: 3.0, y: 0.35 };
 const LOWER = { w: 2.4, h: 4.6, d: 2.4, y: 0.7 + 2.3 };
@@ -226,7 +296,7 @@ function Shield({ progressRef }: { progressRef: ProgressRef }) {
   const shell = useRef<THREE.MeshStandardMaterial>(null);
   const wire = useRef<THREE.MeshBasicMaterial>(null);
   const ring = useRef<THREE.MeshBasicMaterial>(null);
-  const R = 4.4;
+  const R = 3.9;
 
   useFrame((state, dt) => {
     const s = shieldAt(progressRef.current);
@@ -235,7 +305,7 @@ function Shield({ progressRef }: { progressRef: ProgressRef }) {
     g.visible = s > 0.02;
     g.rotation.y += dt * 0.12;
     const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.6) * 0.015;
-    g.scale.set((0.9 + s * 0.1) * pulse, (0.9 + s * 0.1) * 1.7 * pulse, (0.9 + s * 0.1) * pulse);
+    g.scale.set((0.9 + s * 0.1) * pulse, (0.9 + s * 0.1) * 1.55 * pulse, (0.9 + s * 0.1) * pulse);
     if (shell.current) shell.current.opacity = s * 0.12;
     if (wire.current) wire.current.opacity = s * 0.18;
     if (ring.current) ring.current.opacity = s * (0.5 + Math.sin(state.clock.elapsedTime * 2) * 0.2);
@@ -274,12 +344,12 @@ function Rig({ progressRef }: { progressRef: ProgressRef }) {
   useFrame((state) => {
     const p = progressRef.current;
     const fire = fireAt(p);
-    const angle = -0.6 + p * 1.5 + state.clock.elapsedTime * 0.035;
-    const radius = 12 - p * 1.5;
+    const angle = -0.6 + p * 1.4 + state.clock.elapsedTime * 0.03;
+    const radius = 18 - p * 2; // pulled back so the whole tower + skyline fit
     camera.position.x = Math.sin(angle) * radius;
     camera.position.z = Math.cos(angle) * radius;
-    camera.position.y = 5 + Math.sin(state.clock.elapsedTime * 0.5) * 0.25;
-    camera.lookAt(0, 3.6, 0);
+    camera.position.y = 7 + Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+    camera.lookAt(0, 4.2, 0);
     if (light.current) {
       light.current.intensity = 0.3 + fire * 7 * (0.7 + Math.sin(state.clock.elapsedTime * 25) * 0.3);
       light.current.color.set(fire > 0.5 ? '#ff5a1f' : '#ff8a3d');
@@ -292,19 +362,20 @@ export function FireStoryScene({ progressRef }: { progressRef: ProgressRef }) {
   return (
     <>
       <color attach="background" args={['#0a0f1e']} />
-      <fog attach="fog" args={['#0a0f1e', 16, 34]} />
+      <fog attach="fog" args={['#0a0f1e', 22, 50]} />
       <ambientLight intensity={0.5} />
       <directionalLight position={[7, 12, 6]} intensity={1.2} castShadow />
       <directionalLight position={[-8, 4, -6]} intensity={0.4} color="#3b82f6" />
       <hemisphereLight args={['#1e3a8a', '#0a0f1e', 0.55]} />
       <Rig progressRef={progressRef} />
+      <City />
       <Building progressRef={progressRef} />
       <Particles progressRef={progressRef} kind="fire" />
       <Particles progressRef={progressRef} kind="smoke" />
       <Shield progressRef={progressRef} />
       {/* ground */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow>
-        <circleGeometry args={[18, 56]} />
+        <circleGeometry args={[32, 64]} />
         <meshStandardMaterial color="#0c1322" roughness={1} metalness={0.1} />
       </mesh>
     </>

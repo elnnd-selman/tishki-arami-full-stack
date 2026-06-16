@@ -9,6 +9,8 @@
   mark. Tokens live in `frontend/src/styles/theme.css` (do not hardcode hex in
   components — use the CSS variables).
 - Keep the UI modern and clean: solid surfaces, soft shadows, rounded corners.
+- **Light mode only.** The site is always light themed — no dark mode and no
+  light/dark toggle. (Exception: the immersive 3D `/experience` cinematic scene.)
 
 ## Architecture
 - Backend: Express + TypeScript + Prisma + PostgreSQL (`backend/`).
