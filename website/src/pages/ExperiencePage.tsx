@@ -17,8 +17,36 @@ const STEPS = [
   { icon: IconCheck, titleKey: 'story.step3Title', textKey: 'story.step3Text', chapterKey: 'story.ch3' },
 ];
 
+/** Animated reveal: letter-by-letter for LTR, word-by-word for RTL (so Arabic /
+ *  Kurdish letters stay joined). Re-mounts via `key` so it replays per chapter. */
+function RevealText({ text, rtl }: { text: string; rtl: boolean }) {
+  if (rtl) {
+    const words = text.split(' ');
+    return (
+      <>
+        {words.map((w, i) => (
+          <span key={i} className="s3-word" style={{ animationDelay: `${i * 0.09}s` }}>
+            {w}
+            {i < words.length - 1 ? ' ' : ''}
+          </span>
+        ))}
+      </>
+    );
+  }
+  return (
+    <>
+      {[...text].map((ch, i) => (
+        <span key={i} className="s3-char" style={{ animationDelay: `${i * 0.028}s` }}>
+          {ch === ' ' ? ' ' : ch}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export function ExperiencePage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const rtl = i18n.dir() === 'rtl';
   const wrapRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
   const targetRef = useRef(0);
@@ -117,7 +145,9 @@ export function ExperiencePage() {
               <span className="s3-chapter">
                 <ActiveIcon size={15} /> {t(STEPS[active].chapterKey)}
               </span>
-              <h2>{t(STEPS[active].titleKey)}</h2>
+              <h2 key={`h${active}`} className="s3-typed">
+                <RevealText text={t(STEPS[active].titleKey)} rtl={rtl} />
+              </h2>
               <p>{t(STEPS[active].textKey)}</p>
               {active === STEPS.length - 1 && (
                 <div className="story-actions">
@@ -132,19 +162,27 @@ export function ExperiencePage() {
             </div>
           </div>
 
-          {/* chapter rail */}
-          <div className="s3-rail">
-            {STEPS.map((s, i) => (
-              <button
-                key={i}
-                type="button"
-                className={`s3-chip ${active === i ? 'active' : ''} ${i < active ? 'done' : ''}`}
-                onClick={() => goTo(i)}
-              >
-                <span className="s3-chip-no">0{i + 1}</span>
-                <span className="s3-chip-label">{t(s.chapterKey)}</span>
-              </button>
-            ))}
+          {/* chapter timeline */}
+          <div className="s3-timeline">
+            <div className="s3-tl-track">
+              <div
+                className="s3-tl-fill"
+                style={{ width: `${(active / (STEPS.length - 1)) * 100}%` }}
+              />
+              {STEPS.map((s, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={t(s.chapterKey)}
+                  className={`s3-tl-node ${active >= i ? 'reached' : ''} ${active === i ? 'active' : ''}`}
+                  style={{ left: `${(i / (STEPS.length - 1)) * 100}%` }}
+                  onClick={() => goTo(i)}
+                >
+                  <span className="s3-tl-label">{t(s.chapterKey)}</span>
+                  <span className="s3-tl-dot" />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

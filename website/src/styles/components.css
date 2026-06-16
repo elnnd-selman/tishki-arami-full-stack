@@ -942,47 +942,62 @@
 .s3-panel p { margin-top: 12px; font-size: 16px; line-height: 1.7; color: rgba(255,255,255,0.88); }
 .s3-panel .story-actions { margin-top: 22px; pointer-events: auto; }
 
-.s3-rail {
-  position: absolute; inset-inline: 48px; bottom: 44px;
-  display: flex; gap: 12px; pointer-events: auto;
+/* letter / word reveal on each chapter */
+.s3-typed { display: inline-block; }
+.s3-char, .s3-word {
+  display: inline-block;
+  opacity: 0; transform: translateY(0.4em);
+  animation: charIn 0.42s cubic-bezier(0.16,1,0.3,1) both;
 }
-.s3-chip {
-  flex: 0 0 auto; min-width: 184px;
-  display: flex; align-items: center; gap: 12px;
-  padding: 11px 18px 11px 12px; border-radius: var(--pill);
-  background: rgba(9,13,26,0.55); border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6); cursor: pointer; text-align: start;
-  backdrop-filter: blur(10px); transition: all 0.25s;
+@keyframes charIn { to { opacity: 1; transform: none; } }
+
+/* chapter timeline (replaces the old chip rail) */
+.s3-timeline {
+  position: absolute; inset-inline: 70px; bottom: 60px;
+  pointer-events: auto; direction: ltr;
 }
-.s3-chip:hover { border-color: rgba(255,255,255,0.28); color: rgba(255,255,255,0.85); }
-/* circular step number badge */
-.s3-chip-no {
-  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
-  display: grid; place-items: center;
-  font-size: 12px; font-weight: 900; letter-spacing: -0.02em;
-  background: rgba(255,255,255,0.1); color: #fff; transition: all 0.25s;
+.s3-tl-track {
+  position: relative; height: 3px; border-radius: 3px;
+  background: rgba(255,255,255,0.16);
 }
-.s3-chip-label { font-size: 14px; font-weight: 700; transition: color 0.25s; }
-/* done = filled red badge; active = blue ring + glow */
-.s3-chip.done .s3-chip-no { background: var(--accent); color: #fff; }
-.s3-chip.done { color: rgba(255,255,255,0.85); }
-.s3-chip.active {
-  background: rgba(37,99,235,0.16); border-color: var(--blue-500);
-  color: #fff; box-shadow: 0 0 0 1px var(--blue-500), 0 12px 30px rgba(37,99,235,0.3);
+.s3-tl-fill {
+  position: absolute; inset-block: 0; left: 0;
+  background: var(--accent); border-radius: 3px;
+  box-shadow: 0 0 12px rgba(220,38,38,0.6);
+  transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
 }
-.s3-chip.active .s3-chip-no { background: var(--blue-600); color: #fff; }
+.s3-tl-node {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  background: none; border: none; padding: 0; cursor: pointer;
+}
+.s3-tl-dot {
+  display: block; width: 16px; height: 16px; border-radius: 50%;
+  background: #0a0f1e; border: 2px solid rgba(255,255,255,0.3);
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.s3-tl-node.reached .s3-tl-dot { border-color: var(--accent); background: var(--accent); }
+.s3-tl-node.active .s3-tl-dot {
+  border-color: #fff; background: var(--accent);
+  transform: scale(1.25); box-shadow: 0 0 0 6px rgba(220,38,38,0.22);
+}
+.s3-tl-label {
+  position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
+  white-space: nowrap; font-size: 13px; font-weight: 700;
+  color: rgba(255,255,255,0.45); transition: color 0.3s;
+}
+.s3-tl-node.active .s3-tl-label { color: #fff; }
+.s3-tl-node:first-child .s3-tl-label { left: 0; transform: none; }
+.s3-tl-node:last-child .s3-tl-label { left: auto; right: 0; transform: none; }
 
 @media (max-width: 860px) {
   .s3-top { inset-inline-start: 18px; top: 16px; }
-  .s3-panel { inset-inline: 18px; bottom: 130px; gap: 10px; align-items: flex-start; max-width: none; }
+  .s3-panel { inset-inline: 18px; bottom: 120px; gap: 10px; align-items: flex-start; max-width: none; }
   .s3-num { font-size: 52px; }
   .s3-body { padding: 18px 20px; max-width: none; }
   .s3-panel h2 { font-size: 26px; }
   .s3-panel p { font-size: 14px; }
-  .s3-rail { inset-inline: 12px; bottom: 14px; gap: 8px; }
-  .s3-chip { min-width: 0; flex: 1; padding: 8px 10px 8px 8px; gap: 8px; }
-  .s3-chip-no { width: 26px; height: 26px; font-size: 11px; }
-  .s3-chip-label { font-size: 12px; }
+  .s3-timeline { inset-inline: 40px; bottom: 40px; }
+  .s3-tl-label { font-size: 11px; }
 }
 
 /* ---------- Hand-gesture control (camera) ---------- */
