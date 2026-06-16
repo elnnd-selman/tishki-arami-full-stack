@@ -1,0 +1,536 @@
+/* ==========================================================================
+   TishkiArami — CSS 3D firefighting equipment scene.
+   NO gradients, NO emojis. Solid Red #dc2626 + Blue #1d4ed8 only.
+   ========================================================================== */
+
+/* ---------- Scene wrapper ---------- */
+.fire-scene-wrap {
+  width: 100%;
+  height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.fire-scene-perspective {
+  position: relative;
+  width: 480px;
+  height: 480px;
+  perspective: 1100px;
+  perspective-origin: 50% 40%;
+}
+
+/* ---------- Object base positioning ---------- */
+.fire-obj {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+/* ─────────────────────────────────────────────
+   FIRE EXTINGUISHER
+   Body: 100px × 260px box, border-radius makes it cylindrical
+   All faces positioned in 3D space
+───────────────────────────────────────────── */
+.obj-ext {
+  left: 140px; top: 60px;
+  animation: float 6s ease-in-out infinite, extSway 10s ease-in-out infinite;
+}
+
+@keyframes extSway {
+  0%,100% { transform: rotateX(-12deg) rotateY(-18deg); }
+  50%      { transform: rotateX(-12deg) rotateY(14deg); }
+}
+
+.ext3d {
+  position: relative;
+  width: 100px;
+  height: 260px;
+  transform-style: preserve-3d;
+  transform: rotateX(-12deg) rotateY(-18deg);
+}
+
+/* Shared face style */
+.ext-face { position: absolute; }
+
+/* Front face — bright red cylinder-like */
+.ext-front {
+  width: 100px; height: 220px;
+  bottom: 20px; left: 0;
+  background: #dc2626;
+  border-radius: 50px 50px 44px 44px;
+  transform: translateZ(44px);
+  box-shadow: inset -10px 0 20px rgba(0,0,0,0.18);
+}
+/* Back face — dark red */
+.ext-back {
+  width: 100px; height: 220px;
+  bottom: 20px; left: 0;
+  background: #7f1d1d;
+  border-radius: 50px 50px 44px 44px;
+  transform: translateZ(-44px);
+}
+/* Right face — medium dark red */
+.ext-right {
+  width: 88px; height: 220px;
+  bottom: 20px; left: 50px;
+  background: #991b1b;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+/* Left face — darkest */
+.ext-left {
+  width: 88px; height: 220px;
+  bottom: 20px; left: 6px;
+  background: #7f1d1d;
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+}
+/* Top cap */
+.ext-cap-top {
+  width: 100px; height: 88px;
+  top: 20px; left: 0;
+  background: #b91c1c;
+  border-radius: 50%;
+  transform: rotateX(90deg);
+  transform-origin: center bottom;
+}
+/* Bottom */
+.ext-bottom {
+  width: 100px; height: 88px;
+  bottom: 0; left: 0;
+  background: #7f1d1d;
+  border-radius: 50%;
+  transform: rotateX(-90deg);
+  transform-origin: center top;
+}
+/* Base ring */
+.ext-base-f {
+  width: 110px; height: 20px;
+  bottom: 0; left: -5px;
+  background: #991b1b;
+  border-radius: 8px;
+  transform: translateZ(44px);
+}
+.ext-base-r {
+  width: 96px; height: 20px;
+  bottom: 0; left: 57px;
+  background: #7f1d1d;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+
+/* Shoulder ring */
+.ext-shoulder-f {
+  width: 106px; height: 22px;
+  top: 16px; left: -3px;
+  background: #b91c1c;
+  border-radius: 12px;
+  transform: translateZ(44px);
+}
+.ext-shoulder-r {
+  width: 88px; height: 22px;
+  top: 16px; left: 53px;
+  background: #991b1b;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+
+/* Neck */
+.ext-neck { transform-style: preserve-3d; }
+.ext-neck-f {
+  width: 44px; height: 36px;
+  top: 0; left: 28px;
+  background: #991b1b;
+  border-radius: 8px 8px 0 0;
+  transform: translateZ(22px);
+}
+.ext-neck-r {
+  width: 44px; height: 36px;
+  top: 0; left: 50px;
+  background: #7f1d1d;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+.ext-neck-top {
+  width: 44px; height: 44px;
+  top: 0; left: 28px;
+  background: #7f1d1d;
+  border-radius: 50%;
+  transform: rotateX(90deg);
+  transform-origin: center bottom;
+}
+
+/* Head / valve block */
+.ext-head { transform-style: preserve-3d; }
+.ext-head-f {
+  width: 56px; height: 30px;
+  top: -38px; left: 22px;
+  background: #1e293b;
+  border-radius: 10px 10px 6px 6px;
+  transform: translateZ(22px);
+}
+.ext-head-r {
+  width: 44px; height: 30px;
+  top: -38px; left: 56px;
+  background: #0f172a;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+.ext-head-top {
+  width: 56px; height: 44px;
+  top: -38px; left: 22px;
+  background: #334155;
+  border-radius: 50% 50% 0 0;
+  transform: rotateX(90deg);
+  transform-origin: center bottom;
+}
+
+/* Handle */
+.ext-handle-wrap {
+  position: absolute;
+  top: -72px; left: 18px;
+  transform-style: preserve-3d;
+  transform: translateZ(22px);
+}
+.ext-handle-bar {
+  position: absolute;
+  width: 64px; height: 9px;
+  top: 0; left: 0;
+  background: #0f172a;
+  border-radius: 5px;
+}
+.ext-handle-l {
+  position: absolute;
+  width: 9px; height: 36px;
+  top: 0; left: 0;
+  background: #1e293b;
+  border-radius: 5px 5px 0 0;
+}
+.ext-handle-r {
+  position: absolute;
+  width: 9px; height: 36px;
+  top: 0; right: 0;
+  background: #1e293b;
+  border-radius: 5px 5px 0 0;
+}
+
+/* Safety pin */
+.ext-pin {
+  position: absolute;
+  width: 8px; height: 8px;
+  top: -62px; left: 26px;
+  background: #fbbf24;
+  border-radius: 50%;
+  transform: translateZ(23px);
+  box-shadow: -12px 4px 0 1px #f59e0b;
+}
+
+/* Gauge */
+.ext-gauge {
+  position: absolute;
+  width: 26px; height: 26px;
+  bottom: 88px; left: 37px;
+  background: #fef2f2;
+  border-radius: 50%;
+  border: 3px solid #7f1d1d;
+  transform: translateZ(45px);
+  box-shadow: inset 0 0 0 6px #fecaca;
+}
+
+/* Hose */
+.ext-hose {
+  position: absolute;
+  width: 10px; height: 70px;
+  bottom: 100px; right: -48px;
+  background: #1e293b;
+  border-radius: 5px 5px 0 0;
+  transform: translateZ(30px) rotateZ(30deg);
+}
+/* Nozzle */
+.ext-nozzle {
+  position: absolute;
+  width: 18px; height: 14px;
+  bottom: 68px; right: -68px;
+  background: #334155;
+  border-radius: 4px;
+  transform: translateZ(28px) rotateZ(30deg);
+}
+
+/* ─────────────────────────────────────────────
+   FIRE HELMET
+───────────────────────────────────────────── */
+.obj-helmet {
+  left: 30px; top: 40px;
+  animation: floatAlt 7s 0.5s ease-in-out infinite, helmetSway 11s ease-in-out infinite;
+}
+
+@keyframes helmetSway {
+  0%,100% { transform: rotateX(-8deg) rotateY(20deg); }
+  50%      { transform: rotateX(-8deg) rotateY(-10deg); }
+}
+
+.helmet3d {
+  position: relative;
+  width: 110px;
+  height: 90px;
+  transform-style: preserve-3d;
+  transform: rotateX(-8deg) rotateY(20deg);
+}
+
+/* Dome front */
+.hm-dome-f {
+  position: absolute;
+  width: 90px; height: 70px;
+  top: 0; left: 10px;
+  background: #1d4ed8;
+  border-radius: 50% 50% 30% 30%;
+  transform: translateZ(32px);
+  box-shadow: inset 0 -8px 16px rgba(0,0,0,0.25);
+}
+.hm-dome-r {
+  position: absolute;
+  width: 64px; height: 70px;
+  top: 0; left: 58px;
+  background: #1e40af;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+  border-radius: 0 30% 0 0;
+}
+.hm-dome-l {
+  position: absolute;
+  width: 64px; height: 70px;
+  top: 0; left: 14px;
+  background: #1e3a8a;
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+  border-radius: 30% 0 0 0;
+}
+.hm-dome-top {
+  position: absolute;
+  width: 90px; height: 64px;
+  top: 0; left: 10px;
+  background: #2563eb;
+  border-radius: 50%;
+  transform: rotateX(90deg);
+  transform-origin: center bottom;
+}
+
+/* Brim */
+.hm-brim-f {
+  position: absolute;
+  width: 110px; height: 14px;
+  top: 58px; left: 0;
+  background: #1e3a8a;
+  border-radius: 4px;
+  transform: translateZ(32px);
+}
+.hm-brim-r {
+  position: absolute;
+  width: 64px; height: 14px;
+  top: 58px; left: 58px;
+  background: #1e3a8a;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+.hm-brim-top {
+  position: absolute;
+  width: 110px; height: 64px;
+  top: 56px; left: 0;
+  background: #1e3a8a;
+  transform: rotateX(90deg);
+  transform-origin: center bottom;
+  border-radius: 4px;
+}
+
+/* Visor */
+.hm-visor {
+  position: absolute;
+  width: 68px; height: 22px;
+  top: 38px; left: 21px;
+  background: #0ea5e9;
+  border-radius: 0 0 14px 14px;
+  transform: translateZ(33px);
+  opacity: 0.75;
+}
+
+/* Crest on top */
+.hm-crest {
+  position: absolute;
+  width: 10px; height: 28px;
+  top: -20px; left: 50px;
+  background: #dc2626;
+  border-radius: 5px 5px 0 0;
+  transform: translateZ(32px);
+}
+
+/* ─────────────────────────────────────────────
+   FIRE AXE
+───────────────────────────────────────────── */
+.obj-axe {
+  left: 330px; top: 100px;
+  animation: float 8s 1s ease-in-out infinite, axeSway 13s ease-in-out infinite;
+}
+
+@keyframes axeSway {
+  0%,100% { transform: rotateX(-6deg) rotateY(-24deg) rotateZ(-8deg); }
+  50%      { transform: rotateX(-6deg) rotateY(10deg) rotateZ(4deg); }
+}
+
+.axe3d {
+  position: relative;
+  width: 30px;
+  height: 180px;
+  transform-style: preserve-3d;
+  transform: rotateX(-6deg) rotateY(-24deg) rotateZ(-8deg);
+}
+
+/* Handle front */
+.ax-handle-f {
+  position: absolute;
+  width: 14px; height: 160px;
+  bottom: 0; left: 8px;
+  background: #92400e;
+  border-radius: 7px;
+  transform: translateZ(7px);
+}
+.ax-handle-r {
+  position: absolute;
+  width: 14px; height: 160px;
+  bottom: 0; left: 15px;
+  background: #78350f;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+
+/* Blade */
+.ax-blade-f {
+  position: absolute;
+  width: 52px; height: 48px;
+  top: 0; left: -10px;
+  background: #374151;
+  clip-path: polygon(20% 0%, 100% 20%, 100% 80%, 20% 100%, 0% 50%);
+  transform: translateZ(7px);
+}
+.ax-blade-r {
+  position: absolute;
+  width: 14px; height: 48px;
+  top: 0; left: 44px;
+  background: #1f2937;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+.ax-blade-top {
+  position: absolute;
+  width: 52px; height: 14px;
+  top: 0; left: -10px;
+  background: #4b5563;
+  transform: rotateX(90deg);
+  transform-origin: center bottom;
+}
+
+/* ─────────────────────────────────────────────
+   FLOATING EMBER CUBES
+───────────────────────────────────────────── */
+.ember-cube {
+  position: absolute;
+  transform-style: preserve-3d;
+  animation: spinSlow 4s linear infinite, float 5s ease-in-out infinite;
+}
+
+/* Positions */
+.ec-0 { left: 60px;  top: 30px;  width: 18px; height: 18px; animation-delay: 0s, 0s; }
+.ec-1 { left: 310px; top: 80px;  width: 12px; height: 12px; animation-delay: 0.5s, 1s; }
+.ec-2 { left: 80px;  top: 300px; width: 14px; height: 14px; animation-delay: 1s, 2s; }
+.ec-3 { left: 360px; top: 280px; width: 10px; height: 10px; animation-delay: 1.5s, 0.5s; }
+.ec-4 { left: 200px; top: 20px;  width: 16px; height: 16px; animation-delay: 2s, 1.5s; }
+.ec-5 { left: 390px; top: 160px; width: 10px; height: 10px; animation-delay: 2.5s, 0.8s; }
+
+.ec-face { position: absolute; }
+.ec-f {
+  inset: 0;
+  background: #dc2626;
+  transform: translateZ(calc(var(--s, 9px)));
+}
+.ec-r {
+  top: 0; right: 0; bottom: 0;
+  width: calc(var(--s, 9px));
+  background: #991b1b;
+  transform-origin: right center;
+  transform: rotateY(90deg);
+}
+.ec-top {
+  left: 0; right: 0; top: 0;
+  height: calc(var(--s, 9px));
+  background: #b91c1c;
+  transform: rotateX(90deg);
+  transform-origin: top center;
+}
+
+.ec-0 { --s: 9px; }
+.ec-1 { --s: 6px; }
+.ec-2 { --s: 7px; }
+.ec-3 { --s: 5px; }
+.ec-4 { --s: 8px; }
+.ec-5 { --s: 5px; }
+
+/* ─────────────────────────────────────────────
+   HERO LAYOUT — Two column
+───────────────────────────────────────────── */
+.hero-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  min-height: 100svh;
+  padding: 100px 0 44px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-col-text {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-col-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Logo mark displayed in hero right column */
+.hero-logo-display {
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 20px rgba(255,255,255,0.08), 0 0 0 40px rgba(255,255,255,0.04), 0 32px 80px rgba(0,0,0,0.35);
+  animation: float 6s ease-in-out infinite;
+}
+.hero-logo-display img {
+  width: 240px;
+  height: 240px;
+  object-fit: contain;
+}
+
+/* Header logo image */
+.brand-logo-img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero-cols { grid-template-columns: 1fr; gap: 0; padding-top: 80px; }
+  .hero-col-scene { display: none; }
+}

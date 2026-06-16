@@ -1,0 +1,189 @@
+{
+  "brand": {
+    "name": "Tishki",
+    "accent": "Arami",
+    "tagline": "Fire Safety & Protection Systems"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "brands": "Brands",
+    "services": "Services",
+    "projects": "Projects",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "lang": {
+    "label": "Language"
+  },
+  "common": {
+    "viewAll": "View all",
+    "viewDetails": "View details",
+    "learnMore": "Learn more",
+    "readMore": "Read more",
+    "search": "Search",
+    "searchPlaceholder": "Search products...",
+    "all": "All",
+    "results": "{{count}} results",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "noResultsDesc": "Try adjusting your search or filters.",
+    "previous": "Previous",
+    "next": "Next",
+    "contactForPrice": "Contact for price",
+    "getInTouch": "Get in touch"
+  },
+  "hero": {
+    "title": "Protecting lives with",
+    "titleAccent": "fire safety systems",
+    "subtitle": "TishkiArami supplies and installs certified firefighting equipment, fire suppression systems and safety solutions for industrial, commercial and residential facilities across Kurdistan and Iraq.",
+    "browse": "Browse products",
+    "contact": "Get a quote",
+    "f1": "Certified equipment",
+    "f2": "NFPA compliant",
+    "f3": "24/7 emergency response"
+  },
+  "stats": {
+    "products": "Products",
+    "categories": "Categories",
+    "brands": "Brands",
+    "projects": "Projects"
+  },
+  "home": {
+    "featuredEyebrow": "Featured",
+    "featuredTitle": "Top fire safety products",
+    "featuredDesc": "Certified firefighting and safety equipment from the world's leading manufacturers.",
+    "categoriesEyebrow": "Browse",
+    "categoriesTitle": "Shop by category",
+    "categoriesDesc": "Find fire extinguishers, suppression systems, detection equipment and more.",
+    "brandsEyebrow": "Trusted",
+    "brandsTitle": "Brands we carry",
+    "servicesEyebrow": "What we do",
+    "servicesTitle": "Our services",
+    "servicesDesc": "Comprehensive fire protection services from design to installation and maintenance.",
+    "projectsEyebrow": "Portfolio",
+    "projectsTitle": "Completed projects",
+    "projectsDesc": "Fire safety systems we have designed and installed across the region.",
+    "blogEyebrow": "Insights",
+    "blogTitle": "From our blog",
+    "blogDesc": "Fire safety guides, regulations and expert tips from our team."
+  },
+  "product": {
+    "specifications": "Specifications",
+    "variants": "Variants",
+    "relatedTitle": "You may also like",
+    "sku": "SKU",
+    "brand": "Brand",
+    "category": "Category",
+    "attribute": "Variant",
+    "price": "Price",
+    "requestQuote": "Request a quote",
+    "selectedVariant": "Selected variant",
+    "noImage": "No image available"
+  },
+  "catalog": {
+    "title": "Products",
+    "subtitle": "Browse our full catalog of fire safety, suppression and detection products.",
+    "filters": "Filters",
+    "categories": "Categories",
+    "brands": "Brands",
+    "allCategories": "All categories",
+    "allBrands": "All brands",
+    "clear": "Clear filters",
+    "sort": "Sort",
+    "sortNewest": "Newest",
+    "sortOldest": "Oldest",
+    "sortNameAsc": "Name A-Z",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low"
+  },
+  "categories": {
+    "title": "Categories",
+    "subtitle": "Explore fire safety products organized by category.",
+    "products": "products"
+  },
+  "brands": {
+    "title": "Brands",
+    "subtitle": "We partner with globally certified fire safety manufacturers.",
+    "visitSite": "Visit website",
+    "products": "products"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "End-to-end fire protection services — design, supply, installation and maintenance."
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Fire safety systems installed for clients across Iraq and Kurdistan.",
+    "client": "Client",
+    "location": "Location",
+    "completed": "Completed",
+    "view": "View project",
+    "gallery": "Gallery"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Fire safety knowledge, regulations and expert guidance.",
+    "read": "Read article",
+    "by": "By {{name}}",
+    "views": "{{count}} views",
+    "backToBlog": "Back to blog"
+  },
+  "about": {
+    "title": "About TishkiArami",
+    "subtitle": "Your trusted partner for fire safety and fire protection systems.",
+    "storyTitle": "Built on safety and expertise",
+    "story1": "TishkiArami is a specialist fire safety company based in Kurdistan, Iraq. We supply, install and maintain certified firefighting equipment and fire suppression systems for industrial plants, commercial buildings, hospitals, hotels and residential developments.",
+    "story2": "Our experienced engineers work to international fire safety standards, ensuring every system we design and install meets local and international codes — giving our clients peace of mind and genuine protection.",
+    "valuesTitle": "Why choose us",
+    "valuesDesc": "We combine a strong product range with certified fire safety expertise.",
+    "v1Title": "Certified equipment",
+    "v1Desc": "Products approved to international fire safety standards and regulations.",
+    "v2Title": "Expert engineers",
+    "v2Desc": "Trained fire safety engineers handling design, installation and inspection.",
+    "v3Title": "Full lifecycle",
+    "v3Desc": "From initial survey to installation, commissioning and annual maintenance.",
+    "v4Title": "Three languages",
+    "v4Desc": "We serve our customers in English, Arabic and Kurdish."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Reach out for a quote, technical consultation or product enquiry. Our team responds quickly.",
+    "infoTitle": "Get in touch",
+    "addressLabel": "Address",
+    "addressValue": "100 Meter Street, Erbil, Kurdistan Region, Iraq",
+    "phoneLabel": "Phone",
+    "phoneValue": "+964 750 000 0000",
+    "emailLabel": "Email",
+    "emailValue": "info@tishkiarami.com",
+    "hoursLabel": "Working hours",
+    "hoursValue": "Sat - Thu, 9:00 AM - 6:00 PM",
+    "formName": "Your name",
+    "formEmail": "Email address",
+    "formSubject": "Subject",
+    "formMessage": "Message",
+    "send": "Send message",
+    "sending": "Sending...",
+    "success": "Thank you! Your message has been sent."
+  },
+  "cta": {
+    "title": "Need a fire safety assessment?",
+    "subtitle": "Our engineers will survey your facility and design the right protection system.",
+    "button": "Contact us today"
+  },
+  "footer": {
+    "about": "Certified fire safety equipment, suppression systems and professional installation services across Kurdistan and Iraq.",
+    "company": "Company",
+    "catalog": "Catalog",
+    "contactTitle": "Contact",
+    "rights": "All rights reserved.",
+    "builtWith": "Fire Safety Specialists"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for does not exist.",
+    "home": "Back to home"
+  }
+}

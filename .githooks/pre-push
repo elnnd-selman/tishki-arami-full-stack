@@ -1,0 +1,27 @@
+#!/bin/sh
+# Build-before-push gate. Every project must typecheck and build before any push.
+# Enabled via: git config core.hooksPath .githooks
+set -e
+
+ROOT="$(git rev-parse --show-toplevel)"
+echo "[pre-push] Building all projects before push..."
+
+build_project() {
+  name="$1"
+  dir="$ROOT/$2"
+  if [ ! -d "$dir" ]; then
+    echo "[pre-push] skip $name (missing $dir)"
+    return 0
+  fi
+  echo "[pre-push] -> $name: typecheck + build"
+  ( cd "$dir" && pnpm typecheck && pnpm build ) || {
+    echo "[pre-push] BUILD FAILED for $name. Push aborted."
+    exit 1
+  }
+}
+
+build_project "backend"  "backend"
+build_project "website"  "website"
+build_project "frontend" "frontend"
+
+echo "[pre-push] All builds passed. Proceeding with push."
