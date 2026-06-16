@@ -1041,3 +1041,72 @@
   color: rgba(255,255,255,0.6); background: rgba(9,13,26,0.85);
   border-top: 1px solid rgba(255,255,255,0.08);
 }
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES — site is always light (no dark mode / night).
+   ========================================================================== */
+
+/* --- 3D experience overlay on the light scene --- */
+.story3d-pin { background: #dfe8f5; }
+.s3-lead { color: var(--ink); text-shadow: none; }
+.s3-kicker { color: var(--muted); text-shadow: none; }
+.s3-body {
+  background: rgba(255,255,255,0.86); border: 1px solid var(--border);
+  box-shadow: 0 24px 60px rgba(15,23,42,0.18); backdrop-filter: blur(10px);
+}
+.s3-panel h2 { color: var(--ink); text-shadow: none; }
+.s3-panel p { color: var(--body); }
+.s3-num { color: var(--accent); text-shadow: none; }
+.story3d .btn-ghost-light { border-color: var(--border); color: var(--ink); }
+.story3d .btn-ghost-light:hover { background: var(--slate-100); border-color: var(--slate-300); }
+/* timeline on light */
+.s3-tl-track { background: rgba(15,23,42,0.14); }
+.s3-tl-dot { background: #fff; border-color: var(--slate-300); }
+.s3-tl-label { color: var(--muted); }
+.s3-tl-node.active .s3-tl-label { color: var(--ink); }
+
+/* --- 3D homepage hero on the light scene --- */
+.hero--3d .hero-scrim { background-color: rgba(255,255,255,0.55); }
+.hero--3d .hero-scrim::after { display: none; }
+.hero--3d h1 { color: var(--ink); text-shadow: none; }
+.hero--3d .hero-sub { color: var(--body); text-shadow: none; }
+.hero--3d .hero-badge { background: rgba(15,23,42,0.05); border-color: var(--border); color: var(--slate-700); }
+.hero--3d .hero-feature { background: #fff; border-color: var(--border); color: var(--slate-700); }
+.hero--3d .hero-feature svg { color: var(--accent); }
+.hero--3d .hero-statsbar { background: rgba(255,255,255,0.72); border-top-color: var(--border); }
+.hero--3d .stat-num { color: var(--ink); }
+.hero--3d .stat-label { color: var(--muted); }
+.hero--3d .btn-ghost-light { border-color: var(--border); color: var(--ink); }
+.hero--3d .btn-ghost-light:hover { background: var(--slate-100); border-color: var(--slate-300); }
+
+/* --- Services band: was dark, now light --- */
+.services-dark { background: var(--surface-alt); color: var(--ink); }
+.services-dark .tile { background: #fff; border-color: var(--border); }
+.services-dark .tile:hover { background: #fff; border-color: var(--blue-200); }
+.services-dark .tile h3 { color: var(--ink); }
+.services-dark .tile p { color: var(--muted); }
+.services-dark .tile-icon { background: var(--blue-50); color: var(--primary); }
+.services-dark .tile-icon.accent { background: var(--red-50); color: var(--accent); }
+.services-dark .eyebrow { color: var(--accent); }
+.services-dark .heading h2 { color: var(--ink); }
+.services-dark .heading p { color: var(--muted); }
+
+/* --- Inner page banner: was dark, now light --- */
+.page-banner { background: var(--surface-alt); color: var(--ink); border-bottom: 1px solid var(--border); }
+.page-banner::after, .page-banner::before { display: none; }
+.page-banner h1 { color: var(--ink); }
+.breadcrumb { color: var(--muted); }
+.breadcrumb a { color: var(--muted); }
+.breadcrumb a:hover { color: var(--ink); }
+.breadcrumb .sep { color: var(--slate-300); }
+
+/* --- Footer: was dark, now light --- */
+.site-footer { background: var(--surface-alt); color: var(--body); border-top: 1px solid var(--border); }
+.footer-brand .brand-name { color: var(--ink); }
+.footer-brand p { color: var(--muted); }
+.footer-col h4 { color: var(--ink); }
+.footer-col a { color: var(--muted); }
+.footer-col a:hover { color: var(--ink); }
+.footer-contact-item { color: var(--muted); }
+.footer-bottom { border-top-color: var(--border); color: var(--muted); }
+.hero--3d .hero-bg { background-color: #dfe8f5; background-image: none; animation: none; }
