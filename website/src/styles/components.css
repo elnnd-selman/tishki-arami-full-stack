@@ -938,8 +938,8 @@
   display: inline-flex; align-items: center; gap: 7px; margin-bottom: 10px;
   font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #f87171;
 }
-.s3-panel h2 { font-size: 38px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.08; }
-.s3-panel p { margin-top: 12px; font-size: 16px; line-height: 1.7; color: rgba(255,255,255,0.85); }
+.s3-panel h2 { color: #fff; font-size: 38px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.08; text-shadow: 0 2px 18px rgba(0,0,0,0.5); }
+.s3-panel p { margin-top: 12px; font-size: 16px; line-height: 1.7; color: rgba(255,255,255,0.88); }
 .s3-panel .story-actions { margin-top: 22px; pointer-events: auto; }
 
 .s3-rail {
@@ -1011,3 +1011,10 @@
 /* ---------- 3D hero backdrop ---------- */
 .hero-canvas { position: absolute !important; inset: 0; z-index: -2; display: block; }
 .hero--3d .hero-scrim { background-color: rgba(8, 12, 24, 0.5); }
+
+.hand-cam-hint {
+  display: block; padding: 6px 10px 9px; text-align: center;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.6); background: rgba(9,13,26,0.85);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}

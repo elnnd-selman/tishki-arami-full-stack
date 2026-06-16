@@ -114,6 +114,7 @@ export function HandControl({ onState }: { onState: (s: HandState) => void }) {
     <div className="hand-cam">
       <video ref={videoRef} muted playsInline className="hand-cam-video" />
       <span className={`hand-cam-status tone-${tone}`}>{status}</span>
+      <span className="hand-cam-hint">Open palm = fire&nbsp;&nbsp;·&nbsp;&nbsp;Closed fist = safe</span>
     </div>
   );
 }
