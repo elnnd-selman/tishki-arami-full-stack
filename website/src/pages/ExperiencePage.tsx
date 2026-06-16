@@ -11,9 +11,9 @@ import { IconArrowRight, IconClock, IconShield, IconCheck } from '../components/
  * frame — the building catches fire (step 2) then is protected by a shield (step 3).
  */
 const STEPS = [
-  { icon: IconClock, titleKey: 'story.step1Title', textKey: 'story.step1Text' },
-  { icon: IconShield, titleKey: 'story.step2Title', textKey: 'story.step2Text' },
-  { icon: IconCheck, titleKey: 'story.step3Title', textKey: 'story.step3Text' },
+  { icon: IconClock, titleKey: 'story.step1Title', textKey: 'story.step1Text', chapterKey: 'story.ch1' },
+  { icon: IconShield, titleKey: 'story.step2Title', textKey: 'story.step2Text', chapterKey: 'story.ch2' },
+  { icon: IconCheck, titleKey: 'story.step3Title', textKey: 'story.step3Text', chapterKey: 'story.ch3' },
 ];
 
 export function ExperiencePage() {
@@ -66,38 +66,48 @@ export function ExperiencePage() {
           <FireStoryScene progressRef={progressRef} />
         </Canvas>
 
-        {/* Story copy overlay */}
-        <div className="story3d-overlay">
-          <span className="story-kicker">
-            <span className="hero-badge-dot" /> {t('story.kicker')}
-          </span>
-
-          <div className="story3d-card" key={active}>
-            <span className="story-step-no">0{active + 1} / 0{STEPS.length}</span>
-            <span className="story-icon"><ActiveIcon size={24} /></span>
-            <h2>{t(STEPS[active].titleKey)}</h2>
-            <p>{t(STEPS[active].textKey)}</p>
-            {active === STEPS.length - 1 && (
-              <div className="story-actions">
-                <Link to="/products" className="btn btn-primary btn-lg">
-                  {t('story.browse')} <IconArrowRight size={18} />
-                </Link>
-                <Link to="/contact" className="btn btn-ghost-light btn-lg">
-                  {t('story.contact')}
-                </Link>
-              </div>
-            )}
+        {/* Story UI overlay */}
+        <div className="s3-overlay">
+          {/* top brand line */}
+          <div className="s3-top">
+            <span className="s3-lead"><span className="hero-badge-dot" /> {t('story.lead')}</span>
+            <span className="s3-kicker">{t('story.kicker')}</span>
           </div>
 
-          <div className="story-dots">
-            {STEPS.map((_, i) => (
+          {/* content panel */}
+          <div className="s3-panel">
+            <span className="s3-num" key={`n${active}`}>0{active + 1}</span>
+            <div className="s3-body" key={`b${active}`}>
+              <span className="s3-chapter">
+                <ActiveIcon size={15} /> {t(STEPS[active].chapterKey)}
+              </span>
+              <h2>{t(STEPS[active].titleKey)}</h2>
+              <p>{t(STEPS[active].textKey)}</p>
+              {active === STEPS.length - 1 && (
+                <div className="story-actions">
+                  <Link to="/products" className="btn btn-primary btn-lg">
+                    {t('story.browse')} <IconArrowRight size={18} />
+                  </Link>
+                  <Link to="/contact" className="btn btn-ghost-light btn-lg">
+                    {t('story.contact')}
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* chapter rail */}
+          <div className="s3-rail">
+            {STEPS.map((s, i) => (
               <button
                 key={i}
                 type="button"
-                aria-label={`Step ${i + 1}`}
-                className={`story-dot ${active === i ? 'active' : ''}`}
+                className={`s3-chip ${active === i ? 'active' : ''} ${i < active ? 'done' : ''}`}
                 onClick={() => goTo(i)}
-              />
+              >
+                <span className="s3-chip-no">0{i + 1}</span>
+                <span className="s3-chip-label">{t(s.chapterKey)}</span>
+              </button>
             ))}
           </div>
         </div>

@@ -932,3 +932,77 @@
   .story3d-card h2 { font-size: 34px; }
   .story3d-card p { font-size: 15px; }
 }
+
+/* ---------- 3D story — designed overlay (s3) ---------- */
+.s3-overlay { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+
+.s3-top {
+  position: absolute; top: calc(var(--header-h) + 26px);
+  inset-inline-start: 48px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.s3-lead {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #fff;
+}
+.s3-kicker { font-size: 13px; color: rgba(255,255,255,0.6); }
+
+.s3-panel {
+  position: absolute; inset-inline-start: 48px; bottom: 136px;
+  display: flex; align-items: flex-start; gap: 26px; max-width: 660px;
+}
+.s3-num {
+  font-size: 124px; font-weight: 900; line-height: 0.78; letter-spacing: -0.05em;
+  color: rgba(255,255,255,0.10);
+  animation: s3Slide 0.5s ease both;
+}
+.s3-body { color: #fff; animation: s3Slide 0.6s cubic-bezier(0.16,1,0.3,1) both; }
+@keyframes s3Slide { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+.s3-chapter {
+  display: inline-flex; align-items: center; gap: 7px; margin-bottom: 12px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #f87171;
+}
+.s3-panel h2 {
+  font-size: 52px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.04;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.55);
+}
+.s3-panel p {
+  margin-top: 16px; max-width: 480px; font-size: 18px; line-height: 1.7;
+  color: rgba(255,255,255,0.82); text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+}
+.s3-panel .story-actions { margin-top: 28px; pointer-events: auto; }
+
+.s3-rail {
+  position: absolute; inset-inline: 48px; bottom: 44px;
+  display: flex; gap: 14px; pointer-events: auto;
+}
+.s3-chip {
+  flex: 1; max-width: 230px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-radius: var(--radius);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.7); cursor: pointer; text-align: start;
+  backdrop-filter: blur(8px); transition: all 0.25s; position: relative; overflow: hidden;
+}
+.s3-chip::after {
+  content: ''; position: absolute; inset-inline-start: 0; bottom: 0;
+  height: 3px; width: 100%; background: var(--accent);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.4s;
+}
+.s3-chip.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
+.s3-chip.active::after, .s3-chip.done::after { transform: scaleX(1); }
+.s3-chip.done { color: rgba(255,255,255,0.85); }
+.s3-chip-no { font-size: 18px; font-weight: 900; color: #fff; opacity: 0.45; }
+.s3-chip.active .s3-chip-no { opacity: 1; color: #f87171; }
+.s3-chip-label { font-size: 14px; font-weight: 700; }
+
+@media (max-width: 860px) {
+  .s3-top { inset-inline-start: 20px; top: calc(var(--header-h) + 14px); }
+  .s3-panel { inset-inline: 20px; bottom: 116px; gap: 12px; flex-direction: column; max-width: none; }
+  .s3-num { font-size: 60px; }
+  .s3-panel h2 { font-size: 30px; }
+  .s3-panel p { font-size: 15px; }
+  .s3-rail { inset-inline: 12px; bottom: 14px; gap: 8px; }
+  .s3-chip { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 3px; }
+  .s3-chip-label { font-size: 12px; }
+}
