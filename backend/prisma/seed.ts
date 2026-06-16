@@ -530,6 +530,44 @@ const PRODUCTS: SeedProduct[] = [
   },
 ];
 
+// Extra variants keyed by product slug, so most products show a variant selector.
+const EXTRA_VARIANTS: Record<string, Array<{ sku: string; price: string; attrs: Record<string, string> }>> = {
+  'co2-extinguisher-5kg': [
+    { sku: 'EXT-CO2-2', price: '59.00', attrs: { Capacity: '2 kg', 'Fire Rating': '34B' } },
+    { sku: 'EXT-CO2-5', price: '89.00', attrs: { Capacity: '5 kg', 'Fire Rating': '89B' } },
+  ],
+  'foam-extinguisher-9l': [
+    { sku: 'EXT-FOAM-6', price: '54.00', attrs: { Capacity: '6 L', 'Fire Rating': '21A 144B' } },
+    { sku: 'EXT-FOAM-9', price: '64.00', attrs: { Capacity: '9 L', 'Fire Rating': '27A 183B' } },
+  ],
+  'wet-chemical-extinguisher-6l': [
+    { sku: 'EXT-WET-3', price: '59.00', attrs: { Capacity: '3 L', 'Fire Rating': '13A 40F' } },
+    { sku: 'EXT-WET-6', price: '79.00', attrs: { Capacity: '6 L', 'Fire Rating': '25A 75F' } },
+  ],
+  'optical-smoke-detector': [
+    { sku: 'DET-OPT-CONV', price: '34.50', attrs: { Type: 'Conventional', Mount: 'Ceiling' } },
+    { sku: 'DET-OPT-ADR', price: '42.00', attrs: { Type: 'Addressable', Mount: 'Ceiling' } },
+  ],
+  'pendent-sprinkler-head': [
+    { sku: 'SPK-PEN-57', price: '6.50', attrs: { Temperature: '57 °C', Finish: 'Chrome' } },
+    { sku: 'SPK-PEN-68', price: '6.50', attrs: { Temperature: '68 °C', Finish: 'Chrome' } },
+    { sku: 'SPK-PEN-93', price: '7.20', attrs: { Temperature: '93 °C', Finish: 'Brass' } },
+  ],
+  'fire-hose-reel-30m': [
+    { sku: 'HOSE-RL-20', price: '135.00', attrs: { Length: '20 m', Diameter: '19 mm' } },
+    { sku: 'HOSE-RL-30', price: '155.00', attrs: { Length: '30 m', Diameter: '19 mm' } },
+  ],
+  'led-emergency-exit-sign': [
+    { sku: 'EML-EXIT-S', price: '38.00', attrs: { Type: 'Single-sided', Backup: '3 hour' } },
+    { sku: 'EML-EXIT-D', price: '46.00', attrs: { Type: 'Double-sided', Backup: '3 hour' } },
+  ],
+  'firefighter-ppe-kit': [
+    { sku: 'PPE-KIT-M', price: '340.00', attrs: { Size: 'Medium' } },
+    { sku: 'PPE-KIT-L', price: '340.00', attrs: { Size: 'Large' } },
+    { sku: 'PPE-KIT-XL', price: '355.00', attrs: { Size: 'X-Large' } },
+  ],
+};
+
 async function seedProducts(categoryIds: Record<string, string>, brandIds: Record<string, string>) {
   let order = 0;
   for (const p of PRODUCTS) {
@@ -559,9 +597,10 @@ async function seedProducts(categoryIds: Record<string, string>, brandIds: Recor
       productId = product.id;
 
       // Variants (created once, with the product).
-      if (p.variants?.length) {
-        for (let vi = 0; vi < p.variants.length; vi++) {
-          const v = p.variants[vi];
+      const variants = p.variants ?? EXTRA_VARIANTS[p.slug] ?? [];
+      if (variants.length) {
+        for (let vi = 0; vi < variants.length; vi++) {
+          const v = variants[vi];
           await prisma.productVariant.create({
             data: {
               productId,

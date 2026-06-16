@@ -1,5 +1,17 @@
 @import './theme.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* Arabic + Kurdish (Sorani) script support — Vazirmatn covers all Kurdish letters */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
+
+/* Rabar_022 — drop the file into public/fonts/ to activate it; until then the
+   stack falls back to Vazirmatn automatically (see --font-ar). */
+@font-face {
+  font-family: 'Rabar_022';
+  src: url('/fonts/Rabar_022.woff2') format('woff2'),
+       url('/fonts/Rabar_022.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 *,
 *::before,
@@ -30,6 +42,21 @@ body {
 }
 [dir='rtl'] {
   direction: rtl;
+  font-family: var(--font-ar);
+}
+/* Arabic/Kurdish reads better with slightly more line-height and normal tracking */
+[dir='rtl'] body,
+[dir='rtl'] h1,
+[dir='rtl'] h2,
+[dir='rtl'] h3 {
+  font-family: var(--font-ar);
+  letter-spacing: 0;
+}
+[dir='rtl'] p,
+[dir='rtl'] .hero-sub,
+[dir='rtl'] .blog-excerpt,
+[dir='rtl'] .pdp-desc {
+  line-height: 1.9;
 }
 a {
   color: inherit;

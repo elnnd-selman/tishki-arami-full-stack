@@ -1,6 +1,16 @@
 @import './theme.css';
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+/* Arabic + Kurdish (Sorani) script support */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+
+@font-face {
+  font-family: 'Rabar_022';
+  src: url('/fonts/Rabar_022.woff2') format('woff2'),
+       url('/fonts/Rabar_022.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 * {
   box-sizing: border-box;
@@ -42,6 +52,7 @@ textarea {
 /* RTL support for Arabic + Kurdish */
 [dir='rtl'] {
   direction: rtl;
+  font-family: var(--font-ar);
 }
 
 /* ---------- Buttons ---------- */

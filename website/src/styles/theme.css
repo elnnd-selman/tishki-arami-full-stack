@@ -61,6 +61,8 @@
   --pill: 999px;
 
   --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Arabic / Kurdish font stack: Rabar first (when present), then Vazirmatn */
+  --font-ar: 'Rabar_022', 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
   --container: 1200px;
   --header-h: 72px;
 }

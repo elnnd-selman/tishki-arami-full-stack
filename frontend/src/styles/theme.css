@@ -74,6 +74,7 @@
 
   /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-ar: 'Rabar_022', 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
 
   --header-h: 64px;
   --sidebar-w: 256px;
