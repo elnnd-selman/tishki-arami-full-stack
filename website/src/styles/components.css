@@ -897,80 +897,50 @@
 /* ---------- 3D scroll-story (WebGL) ---------- */
 .story3d { position: relative; height: 400vh; }
 .story3d-pin {
-  position: sticky; top: 0;
-  height: 100svh; overflow: hidden;
+  position: sticky; top: var(--header-h);
+  height: calc(100svh - var(--header-h)); overflow: hidden;
   background: #0a0f1e;
 }
 .story3d-canvas { position: absolute !important; inset: 0; display: block; }
-.story3d-overlay {
-  position: absolute; inset: 0; z-index: 2;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-  padding: 0 24px 40px; text-align: center; pointer-events: none;
-}
-.story3d .story-kicker {
-  margin-top: calc(var(--header-h) + 28px); margin-bottom: auto;
-  pointer-events: auto;
-}
-.story3d-card {
-  max-width: 640px; color: #fff;
-  animation: storyIn 0.6s cubic-bezier(0.16,1,0.3,1) both;
-}
-@keyframes storyIn { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
-.story3d-card h2 {
-  font-size: 54px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.04;
-  text-shadow: 0 2px 24px rgba(0,0,0,0.55);
-}
-.story3d-card p {
-  margin: 16px auto 0; max-width: 540px;
-  font-size: 18px; line-height: 1.7; color: rgba(255,255,255,0.85);
-  text-shadow: 0 1px 10px rgba(0,0,0,0.4);
-}
-.story3d-card .story-actions { pointer-events: auto; }
-.story3d .story-dots { margin-top: 26px; pointer-events: auto; }
 
-@media (max-width: 860px) {
-  .story3d-card h2 { font-size: 34px; }
-  .story3d-card p { font-size: 15px; }
-}
-
-/* ---------- 3D story — designed overlay (s3) ---------- */
+/* designed overlay */
 .s3-overlay { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 
 .s3-top {
-  position: absolute; top: calc(var(--header-h) + 26px);
-  inset-inline-start: 48px;
-  display: flex; flex-direction: column; gap: 7px;
+  position: absolute; top: 28px; inset-inline-start: 48px;
+  display: flex; flex-direction: column; gap: 6px;
 }
 .s3-lead {
   display: inline-flex; align-items: center; gap: 8px;
-  font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #fff;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #fff; text-shadow: 0 1px 10px rgba(0,0,0,0.6);
 }
-.s3-kicker { font-size: 13px; color: rgba(255,255,255,0.6); }
+.s3-kicker { font-size: 13px; color: rgba(255,255,255,0.72); text-shadow: 0 1px 10px rgba(0,0,0,0.6); }
 
 .s3-panel {
-  position: absolute; inset-inline-start: 48px; bottom: 136px;
-  display: flex; align-items: flex-start; gap: 26px; max-width: 660px;
+  position: absolute; inset-inline-start: 48px; bottom: 150px;
+  display: flex; align-items: flex-end; gap: 18px; max-width: 640px;
 }
 .s3-num {
-  font-size: 124px; font-weight: 900; line-height: 0.78; letter-spacing: -0.05em;
-  color: rgba(255,255,255,0.10);
+  font-size: 104px; font-weight: 900; line-height: 0.72; letter-spacing: -0.05em;
+  color: #f87171; text-shadow: 0 6px 24px rgba(0,0,0,0.55);
   animation: s3Slide 0.5s ease both;
 }
-.s3-body { color: #fff; animation: s3Slide 0.6s cubic-bezier(0.16,1,0.3,1) both; }
+.s3-body {
+  color: #fff; max-width: 440px; padding: 24px 30px;
+  background: rgba(9,13,26,0.68); border: 1px solid rgba(255,255,255,0.16);
+  border-radius: var(--radius-lg); backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  animation: s3Slide 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
 @keyframes s3Slide { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 .s3-chapter {
-  display: inline-flex; align-items: center; gap: 7px; margin-bottom: 12px;
+  display: inline-flex; align-items: center; gap: 7px; margin-bottom: 10px;
   font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #f87171;
 }
-.s3-panel h2 {
-  font-size: 52px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.04;
-  text-shadow: 0 2px 24px rgba(0,0,0,0.55);
-}
-.s3-panel p {
-  margin-top: 16px; max-width: 480px; font-size: 18px; line-height: 1.7;
-  color: rgba(255,255,255,0.82); text-shadow: 0 1px 10px rgba(0,0,0,0.4);
-}
-.s3-panel .story-actions { margin-top: 28px; pointer-events: auto; }
+.s3-panel h2 { font-size: 38px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.08; }
+.s3-panel p { margin-top: 12px; font-size: 16px; line-height: 1.7; color: rgba(255,255,255,0.85); }
+.s3-panel .story-actions { margin-top: 22px; pointer-events: auto; }
 
 .s3-rail {
   position: absolute; inset-inline: 48px; bottom: 44px;
@@ -980,28 +950,29 @@
   flex: 1; max-width: 230px;
   display: flex; align-items: center; gap: 12px;
   padding: 14px 16px; border-radius: var(--radius);
-  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
-  color: rgba(255,255,255,0.7); cursor: pointer; text-align: start;
-  backdrop-filter: blur(8px); transition: all 0.25s; position: relative; overflow: hidden;
+  background: rgba(9,13,26,0.6); border: 1px solid rgba(255,255,255,0.16);
+  color: rgba(255,255,255,0.72); cursor: pointer; text-align: start;
+  backdrop-filter: blur(10px); transition: all 0.25s; position: relative; overflow: hidden;
 }
 .s3-chip::after {
   content: ''; position: absolute; inset-inline-start: 0; bottom: 0;
   height: 3px; width: 100%; background: var(--accent);
   transform: scaleX(0); transform-origin: left; transition: transform 0.4s;
 }
-.s3-chip.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
+.s3-chip.active { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.34); color: #fff; }
 .s3-chip.active::after, .s3-chip.done::after { transform: scaleX(1); }
-.s3-chip.done { color: rgba(255,255,255,0.85); }
-.s3-chip-no { font-size: 18px; font-weight: 900; color: #fff; opacity: 0.45; }
+.s3-chip.done { color: rgba(255,255,255,0.88); }
+.s3-chip-no { font-size: 18px; font-weight: 900; color: #fff; opacity: 0.5; }
 .s3-chip.active .s3-chip-no { opacity: 1; color: #f87171; }
 .s3-chip-label { font-size: 14px; font-weight: 700; }
 
 @media (max-width: 860px) {
-  .s3-top { inset-inline-start: 20px; top: calc(var(--header-h) + 14px); }
-  .s3-panel { inset-inline: 20px; bottom: 116px; gap: 12px; flex-direction: column; max-width: none; }
-  .s3-num { font-size: 60px; }
-  .s3-panel h2 { font-size: 30px; }
-  .s3-panel p { font-size: 15px; }
+  .s3-top { inset-inline-start: 18px; top: 16px; }
+  .s3-panel { inset-inline: 18px; bottom: 130px; gap: 10px; align-items: flex-start; max-width: none; }
+  .s3-num { font-size: 52px; }
+  .s3-body { padding: 18px 20px; max-width: none; }
+  .s3-panel h2 { font-size: 26px; }
+  .s3-panel p { font-size: 14px; }
   .s3-rail { inset-inline: 12px; bottom: 14px; gap: 8px; }
   .s3-chip { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 3px; }
   .s3-chip-label { font-size: 12px; }
