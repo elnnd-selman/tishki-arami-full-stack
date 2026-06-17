@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { Environment, Lightformer } from '@react-three/drei';
 import * as THREE from 'three';
 
 type ProgressRef = { current: number };
@@ -55,11 +56,38 @@ function makeFacade(seed: number) {
   return t;
 }
 
+// Street-grid ground: light plots with darker asphalt roads between blocks.
+function makeGround() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const ctx = c.getContext('2d')!;
+  ctx.fillStyle = '#9aa6ba'; // asphalt
+  ctx.fillRect(0, 0, 128, 128);
+  ctx.fillStyle = '#c3cedd'; // plot / sidewalk block
+  ctx.fillRect(14, 14, 100, 100);
+  ctx.fillStyle = '#cdd7e4';
+  ctx.fillRect(20, 20, 88, 88);
+  // lane markings
+  ctx.strokeStyle = '#e8edf4';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 8]);
+  ctx.beginPath();
+  ctx.moveTo(7, 0); ctx.lineTo(7, 128);
+  ctx.moveTo(0, 7); ctx.lineTo(128, 7);
+  ctx.stroke();
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+
 // A real city laid out on a block grid around a central plaza (the hero tower).
 function City() {
   const base = useMemo(() => [makeFacade(7), makeFacade(19), makeFacade(31)], []);
   const buildings = useMemo(() => {
-    const arr: { x: number; z: number; w: number; h: number; d: number; ti: number; rx: number; rz: number }[] = [];
+    const arr: {
+      x: number; z: number; w: number; h: number; d: number; ti: number; rx: number; rz: number; glass: boolean;
+    }[] = [];
     let n = 777;
     const rnd = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
     const R = 4; // grid half-extent -> 9x9 blocks
@@ -79,6 +107,7 @@ function City() {
           ti: Math.floor(rnd() * base.length),
           rx: Math.max(1, Math.round(w)),
           rz: Math.max(1, Math.round(h / 1.6)),
+          glass: rnd() > 0.45, // mix of glass towers and concrete blocks
         });
       }
     }
@@ -103,7 +132,11 @@ function City() {
       {buildings.map((b, i) => (
         <mesh key={i} position={[b.x, b.h / 2, b.z]} castShadow receiveShadow>
           <boxGeometry args={[b.w, b.h, b.d]} />
-          <meshStandardMaterial map={texes[i]} color="#cdd8e8" roughness={0.55} metalness={0.35} />
+          {b.glass ? (
+            <meshStandardMaterial map={texes[i]} color="#aebfd6" roughness={0.12} metalness={0.85} />
+          ) : (
+            <meshStandardMaterial map={texes[i]} color="#c2ccdb" roughness={0.85} metalness={0.1} />
+          )}
         </mesh>
       ))}
     </group>
@@ -184,7 +217,7 @@ function Building({ progressRef }: { progressRef: ProgressRef }) {
     }
   });
 
-  const towerMat = <meshStandardMaterial color="#aebfd8" roughness={0.22} metalness={0.6} />;
+  const towerMat = <meshStandardMaterial color="#a9bdd9" roughness={0.1} metalness={0.9} />;
 
   return (
     <group>
@@ -353,27 +386,53 @@ function Rig({ progressRef }: { progressRef: ProgressRef }) {
   return <pointLight ref={light} position={[0, 2.8, 0]} distance={22} color="#ff7a18" intensity={0} />;
 }
 
+function Ground() {
+  const tex = useMemo(makeGround, []);
+  tex.repeat.set(18, 18);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow>
+      <planeGeometry args={[80, 80]} />
+      <meshStandardMaterial map={tex} roughness={0.9} metalness={0.05} />
+    </mesh>
+  );
+}
+
 export function FireStoryScene({ progressRef }: { progressRef: ProgressRef }) {
   return (
     <>
       {/* daytime sky */}
       <color attach="background" args={['#dfe8f5']} />
-      <fog attach="fog" args={['#dfe8f5', 24, 52]} />
-      <ambientLight intensity={0.85} />
-      <directionalLight position={[8, 14, 7]} intensity={1.5} castShadow />
-      <directionalLight position={[-8, 5, -6]} intensity={0.3} color="#93c5fd" />
-      <hemisphereLight args={['#ffffff', '#c4d0e2', 0.6]} />
+      <fog attach="fog" args={['#dfe8f5', 26, 56]} />
+      <ambientLight intensity={0.55} />
+      <directionalLight
+        position={[12, 18, 9]}
+        intensity={1.7}
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-near={1}
+        shadow-camera-far={70}
+        shadow-camera-left={-28}
+        shadow-camera-right={28}
+        shadow-camera-top={28}
+        shadow-camera-bottom={-28}
+        shadow-bias={-0.0004}
+      />
+      <directionalLight position={[-8, 5, -6]} intensity={0.25} color="#93c5fd" />
+      <hemisphereLight args={['#ffffff', '#c4d0e2', 0.5]} />
+      {/* studio environment for realistic glass reflections (no network HDRI) */}
+      <Environment resolution={256} frames={1}>
+        <Lightformer intensity={1.4} position={[0, 8, 0]} scale={[20, 20, 1]} color="#ffffff" />
+        <Lightformer intensity={0.7} position={[10, 4, 10]} scale={[10, 10, 1]} color="#cfe0ff" />
+        <Lightformer intensity={0.5} position={[-10, 3, -8]} scale={[10, 10, 1]} color="#dbe6f7" />
+      </Environment>
       <Rig progressRef={progressRef} />
       <City />
       <Building progressRef={progressRef} />
       <Particles progressRef={progressRef} kind="fire" />
       <Particles progressRef={progressRef} kind="smoke" />
       <Shield progressRef={progressRef} />
-      {/* ground */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow>
-        <circleGeometry args={[32, 64]} />
-        <meshStandardMaterial color="#c4d0e2" roughness={1} metalness={0.05} />
-      </mesh>
+      <Ground />
     </>
   );
 }
