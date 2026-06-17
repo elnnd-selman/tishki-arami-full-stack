@@ -1,22 +1,49 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Environment, Lightformer } from '@react-three/drei';
+import { Environment, Lightformer, Sky, Cloud, Stars } from '@react-three/drei';
 import * as THREE from 'three';
 
 type ProgressRef = { current: number };
 
 const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const fireAt = (p: number) => clamp(1 - Math.abs(p - 0.5) / 0.5);
+const shieldAt = (p: number) => clamp((p - 0.55) / 0.4);
 
-/** Fire intensity peaks in the middle of the scroll (step 2). */
-function fireAt(p: number) {
-  return clamp(1 - Math.abs(p - 0.5) / 0.5);
+// ---- day / night palettes -------------------------------------------------
+interface Pal {
+  bg: string;
+  fog: [number, number];
+  ground: string;
+  amb: number;
+  sun: number;
+  sunColor: string;
+  hemiSky: string;
+  hemiGround: string;
+  hemiInt: number;
+  tower: string;
+  towerMetal: number;
+  towerRough: number;
+  winBase: string;
+  winEmissive: number;
+  glass: string;
+  concrete: string;
+  cityEmissive: number;
+  envInt: number;
+  night: boolean;
 }
-/** Shield ramps in over the second half (step 3). */
-function shieldAt(p: number) {
-  return clamp((p - 0.55) / 0.4);
-}
+const DAY: Pal = {
+  bg: '#dfe8f5', fog: [30, 72], ground: '#c4d0e2',
+  amb: 0.55, sun: 1.7, sunColor: '#ffffff', hemiSky: '#ffffff', hemiGround: '#c4d0e2', hemiInt: 0.5,
+  tower: '#a9bdd9', towerMetal: 0.9, towerRough: 0.1, winBase: '#9fb6db', winEmissive: 0.12,
+  glass: '#aebfd6', concrete: '#c2ccdb', cityEmissive: 0.0, envInt: 1.0, night: false,
+};
+const NIGHT: Pal = {
+  bg: '#070b16', fog: [24, 74], ground: '#0a0f1c',
+  amb: 0.22, sun: 0.45, sunColor: '#9fb4e6', hemiSky: '#1e3a8a', hemiGround: '#05080f', hemiInt: 0.4,
+  tower: '#18213a', towerMetal: 0.85, towerRough: 0.2, winBase: '#cfe0ff', winEmissive: 1.0,
+  glass: '#141d33', concrete: '#1a2438', cityEmissive: 0.9, envInt: 0.35, night: true,
+};
 
-// Soft round particle sprite generated once.
 function makeSprite() {
   const c = document.createElement('canvas');
   c.width = c.height = 64;
@@ -30,7 +57,6 @@ function makeSprite() {
   return new THREE.CanvasTexture(c);
 }
 
-// Daytime facade texture: light panels with blue-grey glass windows.
 function makeFacade(seed: number) {
   const c = document.createElement('canvas');
   c.width = 64;
@@ -47,7 +73,7 @@ function makeFacade(seed: number) {
   const rnd = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
   for (let r = 0; r < rows; r++) {
     for (let col = 0; col < cols; col++) {
-      ctx.fillStyle = rnd() > 0.5 ? '#5b7099' : '#8fa6c8';
+      ctx.fillStyle = rnd() > 0.5 ? '#cfe0ff' : '#2a3957'; // lit vs dark window
       ctx.fillRect(m + col * (gw + m), m + r * (gh + m), gw, gh);
     }
   }
@@ -56,18 +82,16 @@ function makeFacade(seed: number) {
   return t;
 }
 
-// Street-grid ground: light plots with darker asphalt roads between blocks.
 function makeGround() {
   const c = document.createElement('canvas');
   c.width = c.height = 128;
   const ctx = c.getContext('2d')!;
-  ctx.fillStyle = '#9aa6ba'; // asphalt
+  ctx.fillStyle = '#9aa6ba';
   ctx.fillRect(0, 0, 128, 128);
-  ctx.fillStyle = '#c3cedd'; // plot / sidewalk block
+  ctx.fillStyle = '#c3cedd';
   ctx.fillRect(14, 14, 100, 100);
   ctx.fillStyle = '#cdd7e4';
   ctx.fillRect(20, 20, 88, 88);
-  // lane markings
   ctx.strokeStyle = '#e8edf4';
   ctx.lineWidth = 2;
   ctx.setLineDash([8, 8]);
@@ -81,40 +105,35 @@ function makeGround() {
   return t;
 }
 
-// A real city laid out on a block grid around a central plaza (the hero tower).
-function City() {
+const CELL = 4.4;
+
+function City({ pal }: { pal: Pal }) {
   const base = useMemo(() => [makeFacade(7), makeFacade(19), makeFacade(31)], []);
   const buildings = useMemo(() => {
-    const arr: {
-      x: number; z: number; w: number; h: number; d: number; ti: number; rx: number; rz: number; glass: boolean;
-    }[] = [];
+    const arr: { x: number; z: number; w: number; h: number; d: number; ti: number; rx: number; rz: number; glass: boolean }[] = [];
     let n = 777;
     const rnd = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
-    const R = 4; // grid half-extent -> 9x9 blocks
-    const cell = 4.4;
+    const R = 4;
     for (let gx = -R; gx <= R; gx++) {
       for (let gz = -R; gz <= R; gz++) {
-        if (Math.abs(gx) <= 1 && Math.abs(gz) <= 1) continue; // central plaza for the hero tower
-        const h = 1.3 + rnd() * 3.3; // small city blocks so the hero tower dominates
+        if (Math.abs(gx) <= 1 && Math.abs(gz) <= 1) continue;
+        const h = 1.3 + rnd() * 3.3;
         const w = 1.7 + rnd() * 1.1;
         const d = 1.7 + rnd() * 1.1;
         arr.push({
-          x: gx * cell + (rnd() - 0.5) * 1.0,
-          z: gz * cell + (rnd() - 0.5) * 1.0,
-          w,
-          h,
-          d,
+          x: gx * CELL + (rnd() - 0.5) * 1.0,
+          z: gz * CELL + (rnd() - 0.5) * 1.0,
+          w, h, d,
           ti: Math.floor(rnd() * base.length),
           rx: Math.max(1, Math.round(w)),
           rz: Math.max(1, Math.round(h / 1.6)),
-          glass: rnd() > 0.45, // mix of glass towers and concrete blocks
+          glass: rnd() > 0.45,
         });
       }
     }
     return arr;
   }, [base.length]);
 
-  // Per-building texture clone so window rows stay roughly square (independent repeat).
   const texes = useMemo(
     () =>
       buildings.map((b) => {
@@ -132,18 +151,85 @@ function City() {
       {buildings.map((b, i) => (
         <mesh key={i} position={[b.x, b.h / 2, b.z]} castShadow receiveShadow>
           <boxGeometry args={[b.w, b.h, b.d]} />
-          {b.glass ? (
-            <meshStandardMaterial map={texes[i]} color="#aebfd6" roughness={0.12} metalness={0.85} />
-          ) : (
-            <meshStandardMaterial map={texes[i]} color="#c2ccdb" roughness={0.85} metalness={0.1} />
-          )}
+          <meshStandardMaterial
+            map={texes[i]}
+            emissiveMap={texes[i]}
+            emissive="#fff4d6"
+            emissiveIntensity={pal.cityEmissive}
+            color={b.glass ? pal.glass : pal.concrete}
+            roughness={b.glass ? 0.14 : 0.85}
+            metalness={b.glass ? 0.85 : 0.1}
+          />
         </mesh>
       ))}
     </group>
   );
 }
 
-// Tower geometry constants — a tall landmark skyscraper that towers over the city.
+// Moving cars with headlights/taillights along the street grid.
+function Cars({ pal }: { pal: Pal }) {
+  const lanes = useMemo(() => {
+    const arr: { axis: 'x' | 'z'; fixed: number; pos: number; speed: number; color: string }[] = [];
+    let n = 2024;
+    const rnd = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
+    const colors = ['#dc2626', '#2563eb', '#e5e7eb', '#475569', '#f59e0b', '#cbd5e1'];
+    for (let g = -4; g <= 3; g++) {
+      const road = (g + 0.5) * CELL;
+      for (let k = 0; k < 2; k++) {
+        const dir = k === 0 ? 1 : -1;
+        arr.push({ axis: 'z', fixed: road + dir * 0.8, pos: rnd() * 36 - 18, speed: (2.5 + rnd() * 3) * dir, color: colors[Math.floor(rnd() * colors.length)] });
+        arr.push({ axis: 'x', fixed: road + dir * 0.8, pos: rnd() * 36 - 18, speed: (2.5 + rnd() * 3) * dir, color: colors[Math.floor(rnd() * colors.length)] });
+      }
+    }
+    return arr;
+  }, []);
+  const refs = useRef<(THREE.Group | null)[]>([]);
+
+  useFrame((_, dt) => {
+    const d = Math.min(dt, 0.05);
+    lanes.forEach((l, i) => {
+      const m = refs.current[i];
+      if (!m) return;
+      l.pos += l.speed * d;
+      if (l.pos > 18) l.pos = -18;
+      if (l.pos < -18) l.pos = 18;
+      if (l.axis === 'z') {
+        m.position.set(l.fixed, 0.16, l.pos);
+        m.rotation.y = l.speed > 0 ? 0 : Math.PI;
+      } else {
+        m.position.set(l.pos, 0.16, l.fixed);
+        m.rotation.y = l.speed > 0 ? Math.PI / 2 : -Math.PI / 2;
+      }
+    });
+  });
+
+  return (
+    <group>
+      {lanes.map((l, i) => (
+        <group key={i} ref={(el) => (refs.current[i] = el)}>
+          <mesh castShadow position={[0, 0.12, 0]}>
+            <boxGeometry args={[0.5, 0.22, 1.05]} />
+            <meshStandardMaterial color={l.color} roughness={0.4} metalness={0.4} />
+          </mesh>
+          <mesh position={[0, 0.3, -0.05]}>
+            <boxGeometry args={[0.44, 0.2, 0.5]} />
+            <meshStandardMaterial color="#0f172a" roughness={0.2} metalness={0.6} />
+          </mesh>
+          {/* headlights / taillights glow at night */}
+          <mesh position={[0, 0.12, 0.54]}>
+            <boxGeometry args={[0.42, 0.1, 0.04]} />
+            <meshStandardMaterial color="#fff8e1" emissive="#fff3c4" emissiveIntensity={pal.night ? 3 : 0} />
+          </mesh>
+          <mesh position={[0, 0.12, -0.54]}>
+            <boxGeometry args={[0.42, 0.1, 0.04]} />
+            <meshStandardMaterial color="#7f1d1d" emissive="#ef4444" emissiveIntensity={pal.night ? 2 : 0} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
 const PODIUM = { w: 3.8, h: 1.0, d: 3.8 };
 const LOWER = { w: 3.2, h: 7.0, d: 3.2 };
 const UPPER = { w: 2.3, h: 4.2, d: 2.3 };
@@ -153,14 +239,9 @@ const UPPER_Y = PODIUM.h + LOWER.h + UPPER.h / 2;
 const LOWER_TOP = PODIUM.h + LOWER.h;
 const TOP = PODIUM.h + LOWER.h + UPPER.h;
 
-interface WinItem {
-  pos: [number, number, number];
-  ry: number;
-  sx: number;
-  sy: number;
-}
+interface WinItem { pos: [number, number, number]; ry: number; sx: number; sy: number }
 
-function Building({ progressRef }: { progressRef: ProgressRef }) {
+function Building({ progressRef, pal }: { progressRef: ProgressRef; pal: Pal }) {
   const winRef = useRef<THREE.InstancedMesh>(null);
   const winMat = useRef<THREE.MeshStandardMaterial>(null);
   const beaconRef = useRef<THREE.MeshStandardMaterial>(null);
@@ -209,26 +290,25 @@ function Building({ progressRef }: { progressRef: ProgressRef }) {
   }, [windows]);
 
   useFrame((state) => {
-    const p = progressRef.current;
-    const fire = fireAt(p);
+    const fire = fireAt(progressRef.current);
     if (winMat.current) {
-      // glass reflective by day; glows orange while burning
-      const col = new THREE.Color().lerpColors(new THREE.Color('#9fb6db'), new THREE.Color('#ff6a2b'), fire);
+      const col = new THREE.Color().lerpColors(new THREE.Color(pal.winBase), new THREE.Color('#ff6a2b'), fire);
       winMat.current.emissive = col;
-      winMat.current.emissiveIntensity = 0.12 + fire * 2.0;
+      winMat.current.emissiveIntensity = pal.winEmissive + fire * 2.0;
     }
     if (beaconRef.current) {
       beaconRef.current.emissiveIntensity = 0.6 + Math.abs(Math.sin(state.clock.elapsedTime * 2.2)) * 1.4;
     }
   });
 
-  const towerMat = <meshStandardMaterial color="#a9bdd9" roughness={0.1} metalness={0.9} />;
+  const towerMat = <meshStandardMaterial color={pal.tower} roughness={pal.towerRough} metalness={pal.towerMetal} />;
+  const trim = pal.night ? '#0f1727' : '#6c80a4';
 
   return (
     <group>
       <mesh position={[0, PODIUM_Y, 0]} castShadow receiveShadow>
         <boxGeometry args={[PODIUM.w, PODIUM.h, PODIUM.d]} />
-        <meshStandardMaterial color="#8ea2c0" roughness={0.5} metalness={0.4} />
+        <meshStandardMaterial color={pal.night ? '#222d49' : '#8ea2c0'} roughness={0.5} metalness={0.4} />
       </mesh>
       <mesh position={[0, LOWER_Y, 0]} castShadow>
         <boxGeometry args={[LOWER.w, LOWER.h, LOWER.d]} />
@@ -236,7 +316,7 @@ function Building({ progressRef }: { progressRef: ProgressRef }) {
       </mesh>
       <mesh position={[0, LOWER_TOP + 0.08, 0]}>
         <boxGeometry args={[LOWER.w + 0.14, 0.2, LOWER.d + 0.14]} />
-        <meshStandardMaterial color="#6c80a4" roughness={0.6} />
+        <meshStandardMaterial color={trim} roughness={0.6} />
       </mesh>
       <mesh position={[0, UPPER_Y, 0]} castShadow>
         <boxGeometry args={[UPPER.w, UPPER.h, UPPER.d]} />
@@ -244,7 +324,7 @@ function Building({ progressRef }: { progressRef: ProgressRef }) {
       </mesh>
       <mesh position={[0, TOP + 0.12, 0]}>
         <boxGeometry args={[UPPER.w + 0.12, 0.24, UPPER.d + 0.12]} />
-        <meshStandardMaterial color="#6c80a4" roughness={0.6} />
+        <meshStandardMaterial color={trim} roughness={0.6} />
       </mesh>
       <mesh position={[0, TOP + 1.2, 0]}>
         <cylinderGeometry args={[0.05, 0.08, 2.0, 8]} />
@@ -256,13 +336,13 @@ function Building({ progressRef }: { progressRef: ProgressRef }) {
       </mesh>
       <instancedMesh ref={winRef} args={[undefined, undefined, windows.length]} castShadow>
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial ref={winMat} color="#3f5680" emissive="#9fb6db" emissiveIntensity={0.12} roughness={0.15} metalness={0.5} />
+        <meshStandardMaterial ref={winMat} color={pal.night ? '#16203a' : '#3f5680'} emissive={pal.winBase} emissiveIntensity={pal.winEmissive} roughness={0.15} metalness={0.5} />
       </instancedMesh>
     </group>
   );
 }
 
-function Particles({ progressRef, kind }: { progressRef: ProgressRef; kind: 'fire' | 'smoke' }) {
+function Particles({ progressRef, kind, pal }: { progressRef: ProgressRef; kind: 'fire' | 'smoke'; pal: Pal }) {
   const ref = useRef<THREE.Points>(null);
   const matRef = useRef<THREE.PointsMaterial>(null);
   const sprite = useMemo(makeSprite, []);
@@ -304,18 +384,21 @@ function Particles({ progressRef, kind }: { progressRef: ProgressRef; kind: 'fir
     pts.visible = fire > 0.02;
   });
 
+  // Fire glows (additive) at night; reads as solid orange (normal) by day.
+  const blending = kind === 'fire' && pal.night ? THREE.AdditiveBlending : THREE.NormalBlending;
+
   return (
     <points ref={ref}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      {/* NormalBlending so fire reads as solid orange/grey on a light sky */}
       <pointsMaterial
         ref={matRef}
         map={sprite}
-        color={kind === 'fire' ? '#ff4d12' : '#8b93a3'}
+        color={kind === 'fire' ? '#ff5a1f' : pal.night ? '#3a3f4a' : '#8b93a3'}
         transparent
         depthWrite={false}
+        blending={blending}
         size={0.7}
         sizeAttenuation
       />
@@ -323,7 +406,6 @@ function Particles({ progressRef, kind }: { progressRef: ProgressRef; kind: 'fir
   );
 }
 
-// Clean energy dome (smooth shell + neat lat/long wireframe + glowing base ring).
 function Shield({ progressRef }: { progressRef: ProgressRef }) {
   const grp = useRef<THREE.Group>(null);
   const shell = useRef<THREE.MeshStandardMaterial>(null);
@@ -345,27 +427,18 @@ function Shield({ progressRef }: { progressRef: ProgressRef }) {
   });
 
   return (
-    <group ref={grp} position={[0, 0.7, 0]}>
+    <group ref={grp} position={[0, 0.5, 0]}>
       <mesh>
         <sphereGeometry args={[R, 48, 28, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial
-          ref={shell}
-          color="#2563eb"
-          emissive="#1d4ed8"
-          emissiveIntensity={0.5}
-          transparent
-          opacity={0}
-          side={THREE.DoubleSide}
-          depthWrite={false}
-        />
+        <meshStandardMaterial ref={shell} color="#2563eb" emissive="#1d4ed8" emissiveIntensity={0.6} transparent opacity={0} side={THREE.DoubleSide} depthWrite={false} />
       </mesh>
       <mesh>
         <sphereGeometry args={[R + 0.02, 22, 11, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshBasicMaterial ref={wire} color="#2563eb" wireframe transparent opacity={0} depthWrite={false} />
+        <meshBasicMaterial ref={wire} color="#60a5fa" wireframe transparent opacity={0} depthWrite={false} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
         <torusGeometry args={[R, 0.05, 10, 80]} />
-        <meshBasicMaterial ref={ring} color="#1d4ed8" transparent opacity={0} />
+        <meshBasicMaterial ref={ring} color="#3b82f6" transparent opacity={0} />
       </mesh>
     </group>
   );
@@ -385,33 +458,33 @@ function Rig({ progressRef }: { progressRef: ProgressRef }) {
     camera.lookAt(0, 5.5, 0);
     if (light.current) {
       light.current.intensity = fire * 6 * (0.7 + Math.sin(state.clock.elapsedTime * 25) * 0.3);
-      light.current.color.set('#ff5a1f');
     }
   });
   return <pointLight ref={light} position={[0, 6, 0]} distance={26} color="#ff7a18" intensity={0} />;
 }
 
-function Ground() {
+function Ground({ pal }: { pal: Pal }) {
   const tex = useMemo(makeGround, []);
   tex.repeat.set(18, 18);
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow>
       <planeGeometry args={[80, 80]} />
-      <meshStandardMaterial map={tex} roughness={0.9} metalness={0.05} />
+      <meshStandardMaterial map={tex} color={pal.night ? '#33405e' : '#ffffff'} roughness={0.9} metalness={0.05} />
     </mesh>
   );
 }
 
-export function FireStoryScene({ progressRef }: { progressRef: ProgressRef }) {
+export function FireStoryScene({ progressRef, night = false }: { progressRef: ProgressRef; night?: boolean }) {
+  const pal = night ? NIGHT : DAY;
   return (
     <>
-      {/* daytime sky */}
-      <color attach="background" args={['#dfe8f5']} />
-      <fog attach="fog" args={['#dfe8f5', 30, 70]} />
-      <ambientLight intensity={0.55} />
+      <color attach="background" args={[pal.bg]} />
+      <fog attach="fog" args={[pal.bg, pal.fog[0], pal.fog[1]]} />
+      <ambientLight intensity={pal.amb} />
       <directionalLight
         position={[12, 18, 9]}
-        intensity={1.7}
+        intensity={pal.sun}
+        color={pal.sunColor}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -423,21 +496,31 @@ export function FireStoryScene({ progressRef }: { progressRef: ProgressRef }) {
         shadow-camera-bottom={-28}
         shadow-bias={-0.0004}
       />
-      <directionalLight position={[-8, 5, -6]} intensity={0.25} color="#93c5fd" />
-      <hemisphereLight args={['#ffffff', '#c4d0e2', 0.5]} />
-      {/* studio environment for realistic glass reflections (no network HDRI) */}
+      <hemisphereLight args={[pal.hemiSky, pal.hemiGround, pal.hemiInt]} />
       <Environment resolution={256} frames={1}>
-        <Lightformer intensity={1.4} position={[0, 8, 0]} scale={[20, 20, 1]} color="#ffffff" />
-        <Lightformer intensity={0.7} position={[10, 4, 10]} scale={[10, 10, 1]} color="#cfe0ff" />
-        <Lightformer intensity={0.5} position={[-10, 3, -8]} scale={[10, 10, 1]} color="#dbe6f7" />
+        <Lightformer intensity={1.4 * pal.envInt} position={[0, 8, 0]} scale={[20, 20, 1]} color="#ffffff" />
+        <Lightformer intensity={0.7 * pal.envInt} position={[10, 4, 10]} scale={[10, 10, 1]} color="#cfe0ff" />
+        <Lightformer intensity={0.5 * pal.envInt} position={[-10, 3, -8]} scale={[10, 10, 1]} color="#dbe6f7" />
       </Environment>
+
+      {night ? (
+        <Stars radius={80} depth={40} count={2500} factor={4} saturation={0} fade speed={0.6} />
+      ) : (
+        <>
+          <Sky sunPosition={[12, 18, 9]} turbidity={6} rayleigh={1.2} />
+          <Cloud position={[-14, 20, -10]} speed={0.2} opacity={0.5} bounds={[10, 2, 6]} />
+          <Cloud position={[16, 22, -6]} speed={0.2} opacity={0.4} bounds={[12, 2, 6]} />
+        </>
+      )}
+
       <Rig progressRef={progressRef} />
-      <City />
-      <Building progressRef={progressRef} />
-      <Particles progressRef={progressRef} kind="fire" />
-      <Particles progressRef={progressRef} kind="smoke" />
+      <City pal={pal} />
+      <Cars pal={pal} />
+      <Building progressRef={progressRef} pal={pal} />
+      <Particles progressRef={progressRef} kind="fire" pal={pal} />
+      <Particles progressRef={progressRef} kind="smoke" pal={pal} />
       <Shield progressRef={progressRef} />
-      <Ground />
+      <Ground pal={pal} />
     </>
   );
 }

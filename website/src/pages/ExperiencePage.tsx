@@ -118,7 +118,7 @@ export function ExperiencePage() {
           dpr={[1, 2]}
           camera={{ position: [0, 4.5, 11], fov: 45 }}
         >
-          <FireStoryScene progressRef={progressRef} />
+          <FireStoryScene progressRef={progressRef} night />
         </Canvas>
 
         {/* Story UI overlay */}

@@ -1110,3 +1110,23 @@
 .footer-contact-item { color: var(--muted); }
 .footer-bottom { border-top-color: var(--border); color: var(--muted); }
 .hero--3d .hero-bg { background-color: #dfe8f5; background-image: none; animation: none; }
+
+/* ==========================================================================
+   EXPERIENCE NIGHT OVERLAY — /experience 3D scene is the dark cinematic exception
+   (re-applies the dark overlay over the light-theme overrides above).
+   ========================================================================== */
+.story3d-pin { background: #070b16; }
+.s3-lead { color: #fff; }
+.s3-kicker { color: rgba(255,255,255,0.6); }
+.s3-body {
+  background: rgba(9,13,26,0.66); border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+.s3-panel h2 { color: #fff; }
+.s3-panel p { color: rgba(255,255,255,0.85); }
+.story3d .btn-ghost-light { border-color: rgba(255,255,255,0.4); color: #fff; }
+.story3d .btn-ghost-light:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.6); }
+.s3-tl-track { background: rgba(255,255,255,0.16); }
+.s3-tl-dot { background: #070b16; border-color: rgba(255,255,255,0.35); }
+.s3-tl-label { color: rgba(255,255,255,0.5); }
+.s3-tl-node.active .s3-tl-label { color: #fff; }
