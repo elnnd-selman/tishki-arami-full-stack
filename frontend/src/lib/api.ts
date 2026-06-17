@@ -10,8 +10,12 @@ export function setAccessToken(token: string | null) {
   else localStorage.removeItem(ACCESS_TOKEN_KEY);
 }
 
+// VITE_API_BASE is empty in dev (Vite proxies /api) and set to the backend
+// service prefix (e.g. /_/backend) when deployed as a Vercel Service.
+const API_BASE = import.meta.env.VITE_API_BASE ?? '';
+
 export const api: AxiosInstance = axios.create({
-  baseURL: '/api/v1',
+  baseURL: `${API_BASE}/api/v1`,
   withCredentials: true, // send the httpOnly refresh cookie
 });
 
@@ -29,7 +33,7 @@ let refreshing: Promise<string | null> | null = null;
 
 async function refreshAccessToken(): Promise<string | null> {
   try {
-    const res = await axios.post('/api/v1/auth/refresh', {}, { withCredentials: true });
+    const res = await axios.post(`${API_BASE}/api/v1/auth/refresh`, {}, { withCredentials: true });
     const token = res.data?.data?.accessToken ?? null;
     setAccessToken(token);
     return token;

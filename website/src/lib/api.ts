@@ -2,7 +2,10 @@ import axios from 'axios';
 import type { TranslationMap } from '../types';
 
 // Public storefront client. No auth needed - all endpoints are read-only.
-export const api = axios.create({ baseURL: '/api/v1/public' });
+// VITE_API_BASE is empty in dev (Vite proxies /api) and set to the backend
+// service prefix (e.g. /_/backend) when deployed as a Vercel Service.
+const API_BASE = import.meta.env.VITE_API_BASE ?? '';
+export const api = axios.create({ baseURL: `${API_BASE}/api/v1/public` });
 
 type LangArg = string | undefined;
 
