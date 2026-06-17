@@ -95,9 +95,9 @@ function City() {
     for (let gx = -R; gx <= R; gx++) {
       for (let gz = -R; gz <= R; gz++) {
         if (Math.abs(gx) <= 1 && Math.abs(gz) <= 1) continue; // central plaza for the hero tower
-        const h = 2.5 + rnd() * 8.5;
-        const w = 2.2 + rnd() * 1.3;
-        const d = 2.2 + rnd() * 1.3;
+        const h = 1.3 + rnd() * 3.3; // small city blocks so the hero tower dominates
+        const w = 1.7 + rnd() * 1.1;
+        const d = 1.7 + rnd() * 1.1;
         arr.push({
           x: gx * cell + (rnd() - 0.5) * 1.0,
           z: gz * cell + (rnd() - 0.5) * 1.0,
@@ -143,10 +143,15 @@ function City() {
   );
 }
 
-// Tower geometry constants (a two-tier modern skyscraper).
-const PODIUM = { w: 3.0, h: 0.7, d: 3.0, y: 0.35 };
-const LOWER = { w: 2.4, h: 4.6, d: 2.4, y: 0.7 + 2.3 };
-const UPPER = { w: 1.7, h: 2.2, d: 1.7, y: 0.7 + 4.6 + 1.1 };
+// Tower geometry constants — a tall landmark skyscraper that towers over the city.
+const PODIUM = { w: 3.8, h: 1.0, d: 3.8 };
+const LOWER = { w: 3.2, h: 7.0, d: 3.2 };
+const UPPER = { w: 2.3, h: 4.2, d: 2.3 };
+const PODIUM_Y = PODIUM.h / 2;
+const LOWER_Y = PODIUM.h + LOWER.h / 2;
+const UPPER_Y = PODIUM.h + LOWER.h + UPPER.h / 2;
+const LOWER_TOP = PODIUM.h + LOWER.h;
+const TOP = PODIUM.h + LOWER.h + UPPER.h;
 
 interface WinItem {
   pos: [number, number, number];
@@ -163,8 +168,8 @@ function Building({ progressRef }: { progressRef: ProgressRef }) {
   const windows = useMemo<WinItem[]>(() => {
     const items: WinItem[] = [];
     const sections = [
-      { y0: 1.05, floors: 8, cols: 3, hw: LOWER.w / 2 + 0.02, sx: 0.42, sy: 0.42, gap: 0.56 },
-      { y0: 5.55, floors: 3, cols: 2, hw: UPPER.w / 2 + 0.02, sx: 0.34, sy: 0.4, gap: 0.5 },
+      { y0: PODIUM.h + 0.5, floors: 11, sp: 0.55, cols: 4, hw: LOWER.w / 2 + 0.02, sx: 0.45, sy: 0.45, gap: 0.72 },
+      { y0: LOWER_TOP + 0.5, floors: 5, sp: 0.55, cols: 3, hw: UPPER.w / 2 + 0.02, sx: 0.36, sy: 0.42, gap: 0.6 },
     ];
     const sides: { ry: number; axis: 'x' | 'z'; sign: number }[] = [
       { ry: 0, axis: 'z', sign: 1 },
@@ -176,7 +181,7 @@ function Building({ progressRef }: { progressRef: ProgressRef }) {
       for (const side of sides) {
         for (let f = 0; f < s.floors; f++) {
           for (let c = 0; c < s.cols; c++) {
-            const y = s.y0 + f * 0.5;
+            const y = s.y0 + f * s.sp;
             const off = (c - (s.cols - 1) / 2) * s.gap;
             const x = side.axis === 'x' ? side.sign * s.hw : off;
             const z = side.axis === 'z' ? side.sign * s.hw : off;
@@ -221,32 +226,32 @@ function Building({ progressRef }: { progressRef: ProgressRef }) {
 
   return (
     <group>
-      <mesh position={[0, PODIUM.y, 0]} castShadow receiveShadow>
+      <mesh position={[0, PODIUM_Y, 0]} castShadow receiveShadow>
         <boxGeometry args={[PODIUM.w, PODIUM.h, PODIUM.d]} />
         <meshStandardMaterial color="#8ea2c0" roughness={0.5} metalness={0.4} />
       </mesh>
-      <mesh position={[0, LOWER.y, 0]} castShadow>
+      <mesh position={[0, LOWER_Y, 0]} castShadow>
         <boxGeometry args={[LOWER.w, LOWER.h, LOWER.d]} />
         {towerMat}
       </mesh>
-      <mesh position={[0, 0.7 + 4.6 + 0.04, 0]}>
-        <boxGeometry args={[LOWER.w + 0.12, 0.16, LOWER.d + 0.12]} />
+      <mesh position={[0, LOWER_TOP + 0.08, 0]}>
+        <boxGeometry args={[LOWER.w + 0.14, 0.2, LOWER.d + 0.14]} />
         <meshStandardMaterial color="#6c80a4" roughness={0.6} />
       </mesh>
-      <mesh position={[0, UPPER.y, 0]} castShadow>
+      <mesh position={[0, UPPER_Y, 0]} castShadow>
         <boxGeometry args={[UPPER.w, UPPER.h, UPPER.d]} />
         {towerMat}
       </mesh>
-      <mesh position={[0, 0.7 + 4.6 + 2.2 + 0.1, 0]}>
-        <boxGeometry args={[UPPER.w + 0.1, 0.2, UPPER.d + 0.1]} />
+      <mesh position={[0, TOP + 0.12, 0]}>
+        <boxGeometry args={[UPPER.w + 0.12, 0.24, UPPER.d + 0.12]} />
         <meshStandardMaterial color="#6c80a4" roughness={0.6} />
       </mesh>
-      <mesh position={[0, 0.7 + 4.6 + 2.2 + 0.9, 0]}>
-        <cylinderGeometry args={[0.04, 0.06, 1.5, 8]} />
+      <mesh position={[0, TOP + 1.2, 0]}>
+        <cylinderGeometry args={[0.05, 0.08, 2.0, 8]} />
         <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
       </mesh>
-      <mesh position={[0, 0.7 + 4.6 + 2.2 + 1.7, 0]}>
-        <sphereGeometry args={[0.09, 12, 12]} />
+      <mesh position={[0, TOP + 2.3, 0]}>
+        <sphereGeometry args={[0.11, 12, 12]} />
         <meshStandardMaterial ref={beaconRef} color="#ef4444" emissive="#ef4444" emissiveIntensity={1} />
       </mesh>
       <instancedMesh ref={winRef} args={[undefined, undefined, windows.length]} castShadow>
@@ -267,10 +272,10 @@ function Particles({ progressRef, kind }: { progressRef: ProgressRef; kind: 'fir
     const positions = new Float32Array(COUNT * 3);
     const speeds = new Float32Array(COUNT);
     for (let i = 0; i < COUNT; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 2.4;
-      positions[i * 3 + 1] = Math.random() * 7;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 2.4;
-      speeds[i] = 0.8 + Math.random() * 1.7;
+      positions[i * 3] = (Math.random() - 0.5) * 3.0;
+      positions[i * 3 + 1] = Math.random() * 9;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 3.0;
+      speeds[i] = 1.0 + Math.random() * 2.2;
     }
     return { positions, speeds };
   }, [COUNT]);
@@ -280,15 +285,15 @@ function Particles({ progressRef, kind }: { progressRef: ProgressRef; kind: 'fir
     if (!pts) return;
     const fire = fireAt(progressRef.current);
     const arr = pts.geometry.attributes.position.array as Float32Array;
-    const top = kind === 'fire' ? 7.2 : 10;
+    const top = kind === 'fire' ? 9.5 : 15;
     const d = Math.min(dt, 0.05);
     for (let i = 0; i < COUNT; i++) {
       arr[i * 3 + 1] += speeds[i] * d * (kind === 'fire' ? 1.5 : 1.0);
       arr[i * 3] += Math.sin((arr[i * 3 + 1] + i) * 1.5) * d * 0.15;
       if (arr[i * 3 + 1] > top) {
-        arr[i * 3 + 1] = 0.4;
-        arr[i * 3] = (Math.random() - 0.5) * 2.4;
-        arr[i * 3 + 2] = (Math.random() - 0.5) * 2.4;
+        arr[i * 3 + 1] = 0.5;
+        arr[i * 3] = (Math.random() - 0.5) * 3.0;
+        arr[i * 3 + 2] = (Math.random() - 0.5) * 3.0;
       }
     }
     pts.geometry.attributes.position.needsUpdate = true;
@@ -324,7 +329,7 @@ function Shield({ progressRef }: { progressRef: ProgressRef }) {
   const shell = useRef<THREE.MeshStandardMaterial>(null);
   const wire = useRef<THREE.MeshBasicMaterial>(null);
   const ring = useRef<THREE.MeshBasicMaterial>(null);
-  const R = 3.9;
+  const R = 4.6;
 
   useFrame((state, dt) => {
     const s = shieldAt(progressRef.current);
@@ -333,7 +338,7 @@ function Shield({ progressRef }: { progressRef: ProgressRef }) {
     g.visible = s > 0.02;
     g.rotation.y += dt * 0.12;
     const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.6) * 0.015;
-    g.scale.set((0.9 + s * 0.1) * pulse, (0.9 + s * 0.1) * 1.55 * pulse, (0.9 + s * 0.1) * pulse);
+    g.scale.set((0.9 + s * 0.1) * pulse, (0.9 + s * 0.1) * 2.9 * pulse, (0.9 + s * 0.1) * pulse);
     if (shell.current) shell.current.opacity = s * 0.16;
     if (wire.current) wire.current.opacity = s * 0.28;
     if (ring.current) ring.current.opacity = s * (0.6 + Math.sin(state.clock.elapsedTime * 2) * 0.2);
@@ -373,17 +378,17 @@ function Rig({ progressRef }: { progressRef: ProgressRef }) {
     const p = progressRef.current;
     const fire = fireAt(p);
     const angle = -0.6 + p * 1.4 + state.clock.elapsedTime * 0.03;
-    const radius = 21 - p * 2.5;
+    const radius = 26 - p * 3;
     camera.position.x = Math.sin(angle) * radius;
     camera.position.z = Math.cos(angle) * radius;
-    camera.position.y = 9.5 + Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
-    camera.lookAt(0, 3.8, 0);
+    camera.position.y = 12 + Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+    camera.lookAt(0, 5.5, 0);
     if (light.current) {
       light.current.intensity = fire * 6 * (0.7 + Math.sin(state.clock.elapsedTime * 25) * 0.3);
       light.current.color.set('#ff5a1f');
     }
   });
-  return <pointLight ref={light} position={[0, 2.8, 0]} distance={22} color="#ff7a18" intensity={0} />;
+  return <pointLight ref={light} position={[0, 6, 0]} distance={26} color="#ff7a18" intensity={0} />;
 }
 
 function Ground() {
@@ -402,7 +407,7 @@ export function FireStoryScene({ progressRef }: { progressRef: ProgressRef }) {
     <>
       {/* daytime sky */}
       <color attach="background" args={['#dfe8f5']} />
-      <fog attach="fog" args={['#dfe8f5', 26, 56]} />
+      <fog attach="fog" args={['#dfe8f5', 30, 70]} />
       <ambientLight intensity={0.55} />
       <directionalLight
         position={[12, 18, 9]}
