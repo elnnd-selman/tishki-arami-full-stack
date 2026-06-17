@@ -3,7 +3,9 @@
 // Images modeled with real foreign keys + cascade so no orphan rows remain on delete.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // "native" for local dev; rhel-openssl for the Vercel/AWS serverless runtime.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
