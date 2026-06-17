@@ -55,34 +55,55 @@ function makeFacade(seed: number) {
   return t;
 }
 
+// A real city laid out on a block grid around a central plaza (the hero tower).
 function City() {
-  const texes = useMemo(() => [makeFacade(3), makeFacade(11), makeFacade(27), makeFacade(53)], []);
+  const base = useMemo(() => [makeFacade(7), makeFacade(19), makeFacade(31)], []);
   const buildings = useMemo(() => {
-    const arr: { x: number; z: number; w: number; h: number; d: number; ry: number; t: number }[] = [];
-    let n = 12345;
+    const arr: { x: number; z: number; w: number; h: number; d: number; ti: number; rx: number; rz: number }[] = [];
+    let n = 777;
     const rnd = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
-    for (let i = 0; i < 22; i++) {
-      const ang = (i / 22) * Math.PI * 2 + rnd() * 0.5;
-      const rad = 7.5 + rnd() * 11;
-      arr.push({
-        x: Math.cos(ang) * rad,
-        z: Math.sin(ang) * rad,
-        w: 1.2 + rnd() * 1.9,
-        h: 2 + rnd() * 7,
-        d: 1.2 + rnd() * 1.9,
-        ry: rnd() * 0.8,
-        t: i % texes.length,
-      });
+    const R = 4; // grid half-extent -> 9x9 blocks
+    const cell = 4.4;
+    for (let gx = -R; gx <= R; gx++) {
+      for (let gz = -R; gz <= R; gz++) {
+        if (Math.abs(gx) <= 1 && Math.abs(gz) <= 1) continue; // central plaza for the hero tower
+        const h = 2.5 + rnd() * 8.5;
+        const w = 2.2 + rnd() * 1.3;
+        const d = 2.2 + rnd() * 1.3;
+        arr.push({
+          x: gx * cell + (rnd() - 0.5) * 1.0,
+          z: gz * cell + (rnd() - 0.5) * 1.0,
+          w,
+          h,
+          d,
+          ti: Math.floor(rnd() * base.length),
+          rx: Math.max(1, Math.round(w)),
+          rz: Math.max(1, Math.round(h / 1.6)),
+        });
+      }
     }
     return arr;
-  }, [texes.length]);
+  }, [base.length]);
+
+  // Per-building texture clone so window rows stay roughly square (independent repeat).
+  const texes = useMemo(
+    () =>
+      buildings.map((b) => {
+        const t = base[b.ti].clone();
+        t.wrapS = t.wrapT = THREE.RepeatWrapping;
+        t.repeat.set(b.rx, b.rz);
+        t.needsUpdate = true;
+        return t;
+      }),
+    [buildings, base],
+  );
 
   return (
     <group>
       {buildings.map((b, i) => (
-        <mesh key={i} position={[b.x, b.h / 2, b.z]} rotation={[0, b.ry, 0]} castShadow receiveShadow>
+        <mesh key={i} position={[b.x, b.h / 2, b.z]} castShadow receiveShadow>
           <boxGeometry args={[b.w, b.h, b.d]} />
-          <meshStandardMaterial map={texes[b.t]} color="#cdd8e8" roughness={0.55} metalness={0.35} />
+          <meshStandardMaterial map={texes[i]} color="#cdd8e8" roughness={0.55} metalness={0.35} />
         </mesh>
       ))}
     </group>
@@ -319,11 +340,11 @@ function Rig({ progressRef }: { progressRef: ProgressRef }) {
     const p = progressRef.current;
     const fire = fireAt(p);
     const angle = -0.6 + p * 1.4 + state.clock.elapsedTime * 0.03;
-    const radius = 18 - p * 2;
+    const radius = 21 - p * 2.5;
     camera.position.x = Math.sin(angle) * radius;
     camera.position.z = Math.cos(angle) * radius;
-    camera.position.y = 7 + Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
-    camera.lookAt(0, 4.2, 0);
+    camera.position.y = 9.5 + Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+    camera.lookAt(0, 3.8, 0);
     if (light.current) {
       light.current.intensity = fire * 6 * (0.7 + Math.sin(state.clock.elapsedTime * 25) * 0.3);
       light.current.color.set('#ff5a1f');
