@@ -6,10 +6,10 @@ const translationFields = z.object({
 });
 
 export const createBrandSchema = z.object({
-  slug: z.string().trim().max(220).optional(),
+  slug: z.string().trim().min(1).max(220).optional(),
   website: z.string().trim().url('Must be a valid URL').max(300).optional().nullable().or(z.literal('')),
   isActive: z.boolean().optional(),
-  sortOrder: z.coerce.number().int().optional(),
+  sortOrder: z.coerce.number().int().min(0).optional(),
   translations: z.object({
     en: translationFields,
     ar: translationFields.optional(),
@@ -18,10 +18,10 @@ export const createBrandSchema = z.object({
 });
 
 export const updateBrandSchema = z.object({
-  slug: z.string().trim().max(220).optional(),
+  slug: z.string().trim().min(1).max(220).optional(),
   website: z.string().trim().url('Must be a valid URL').max(300).optional().nullable().or(z.literal('')),
   isActive: z.boolean().optional(),
-  sortOrder: z.coerce.number().int().optional(),
+  sortOrder: z.coerce.number().int().min(0).optional(),
   translations: z
     .object({
       en: translationFields.optional(),
@@ -33,7 +33,7 @@ export const updateBrandSchema = z.object({
 
 export const listBrandsSchema = z.object({
   page: z.coerce.number().int().min(1).optional(),
-  pageSize: z.coerce.number().int().min(1).max(200).optional(),
+  pageSize: z.coerce.number().int().min(1).max(100).optional(),
   search: z.string().trim().optional(),
   isActive: z
     .enum(['true', 'false'])

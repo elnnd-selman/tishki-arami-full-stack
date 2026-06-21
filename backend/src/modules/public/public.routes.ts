@@ -2,6 +2,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { asyncHandler } from '../../utils/asyncHandler.js';
 import * as ctrl from './public.controller.js';
+import { submit as contactSubmit } from '../contact/contact.controller.js';
 
 // Public, unauthenticated, read-only storefront API. Only published/active
 // content is ever returned (enforced in the service layer).
@@ -30,5 +31,14 @@ router.get('/projects/:slug', asyncHandler(ctrl.projectBySlug));
 
 router.get('/blogs', asyncHandler(ctrl.blogs));
 router.get('/blogs/:slug', asyncHandler(ctrl.blogBySlug));
+
+// Contact form submission — rate-limited separately to prevent spam.
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === 'test' ? 100000 : 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+router.post('/contact', contactLimiter, asyncHandler(contactSubmit));
 
 export default router;

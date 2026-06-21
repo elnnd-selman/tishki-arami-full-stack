@@ -64,7 +64,7 @@ export function ProductFormPage() {
   const { id } = useParams<{ id: string }>();
   const isNew = !id || id === 'new';
 
-  const { data: product, isLoading } = useProduct(isNew ? undefined : id);
+  const { data: product, isLoading, isError } = useProduct(isNew ? undefined : id);
   const categories = useCategories();
   const brands = useBrands();
   const createMut = useCreateProduct();
@@ -174,6 +174,20 @@ export function ProductFormPage() {
     return (
       <div className="center-screen">
         <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!isNew && isError) {
+    return (
+      <div className="stack">
+        <div className="empty">
+          <div className="empty-title">{t('errors.loadFailed')}</div>
+          <p>{t('errors.notFound')}</p>
+          <Link to="/products" className="btn btn-outline">
+            {t('common.back')}
+          </Link>
+        </div>
       </div>
     );
   }

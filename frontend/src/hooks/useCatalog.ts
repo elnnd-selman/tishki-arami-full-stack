@@ -143,7 +143,7 @@ export function useBrandLogo(id: string) {
   const upload = useMutation({
     mutationFn: async (file: File): Promise<Brand> => {
       const form = new FormData();
-      form.append('image', file);
+      form.append('logo', file);
       return (await api.put(`/brands/${id}/logo`, form)).data.data;
     },
     onSuccess,

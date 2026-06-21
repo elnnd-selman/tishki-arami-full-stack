@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useHome } from '../hooks/usePublic';
 import { pickName, pickField } from '../lib/api';
 import { ProductCard } from '../components/ProductCard';
-import { Hero3D } from '../components/Hero3D';
+import { HeroClassic } from '../components/HeroClassic';
 import { Loader } from '../components/Spinner';
 import {
   IconArrowRight,
@@ -36,8 +36,7 @@ export function HomePage() {
 
   return (
     <>
-      {/* ── Hero — live 3D building backdrop (classic photo hero kept in HeroClassic.tsx) ── */}
-      <Hero3D stats={data.stats} />
+      <HeroClassic stats={data.stats} />
 
       <span id="main" />
 

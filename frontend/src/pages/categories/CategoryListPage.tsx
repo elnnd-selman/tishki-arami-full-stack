@@ -181,7 +181,7 @@ export function CategoryListPage() {
       <ConfirmDialog
         open={Boolean(toDelete)}
         title={t('category.deleteTitle')}
-        body={t('category.deleteBody')}
+        body={t('category.deleteBody', { name: toDelete?.translations?.en?.name ?? toDelete?.slug })}
         loading={del.isPending}
         onConfirm={confirmDelete}
         onCancel={() => setToDelete(null)}

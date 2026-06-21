@@ -42,6 +42,10 @@ export const PERMISSIONS = {
   BLOG_UPDATE: 'blog.update',
   BLOG_DELETE: 'blog.delete',
 
+  // Contact submissions
+  CONTACT_READ: 'contact.read',
+  CONTACT_DELETE: 'contact.delete',
+
   // Administration
   USER_VIEW: 'user.view',
   USER_CREATE: 'user.create',
@@ -91,6 +95,9 @@ export const PERMISSION_DEFINITIONS: Array<{
   { code: PERMISSIONS.BLOG_CREATE, group: 'blog', description: 'Create blogs' },
   { code: PERMISSIONS.BLOG_UPDATE, group: 'blog', description: 'Edit blogs' },
   { code: PERMISSIONS.BLOG_DELETE, group: 'blog', description: 'Delete blogs' },
+
+  { code: PERMISSIONS.CONTACT_READ, group: 'contact', description: 'View contact submissions' },
+  { code: PERMISSIONS.CONTACT_DELETE, group: 'contact', description: 'Delete contact submissions' },
 
   { code: PERMISSIONS.USER_VIEW, group: 'admin', description: 'View users' },
   { code: PERMISSIONS.USER_CREATE, group: 'admin', description: 'Create users' },

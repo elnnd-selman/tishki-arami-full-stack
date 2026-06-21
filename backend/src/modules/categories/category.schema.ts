@@ -7,11 +7,11 @@ const translationFields = z.object({
 });
 
 export const createCategorySchema = z.object({
-  slug: z.string().trim().max(220).optional(),
+  slug: z.string().trim().min(1).max(220).optional(),
   type: z.nativeEnum(CategoryType).optional(),
   parentId: z.string().trim().min(1).optional().nullable(),
   isActive: z.boolean().optional(),
-  sortOrder: z.coerce.number().int().optional(),
+  sortOrder: z.coerce.number().int().min(0).optional(),
   translations: z.object({
     en: translationFields,
     ar: translationFields.optional(),
@@ -20,11 +20,11 @@ export const createCategorySchema = z.object({
 });
 
 export const updateCategorySchema = z.object({
-  slug: z.string().trim().max(220).optional(),
+  slug: z.string().trim().min(1).max(220).optional(),
   type: z.nativeEnum(CategoryType).optional(),
   parentId: z.string().trim().min(1).optional().nullable(),
   isActive: z.boolean().optional(),
-  sortOrder: z.coerce.number().int().optional(),
+  sortOrder: z.coerce.number().int().min(0).optional(),
   translations: z
     .object({
       en: translationFields.optional(),
@@ -36,7 +36,7 @@ export const updateCategorySchema = z.object({
 
 export const listCategoriesSchema = z.object({
   page: z.coerce.number().int().min(1).optional(),
-  pageSize: z.coerce.number().int().min(1).max(200).optional(),
+  pageSize: z.coerce.number().int().min(1).max(100).optional(),
   search: z.string().trim().optional(),
   type: z.nativeEnum(CategoryType).optional(),
   isActive: z

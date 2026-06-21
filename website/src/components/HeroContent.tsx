@@ -14,7 +14,7 @@ export interface HeroStats {
 /** Shared hero copy + stats bar, used by both the classic and 3D hero shells. */
 export function HeroContent({ stats }: { stats: HeroStats }) {
   const { t } = useTranslation();
-  const [statsRef, statsInView] = useInView<HTMLDivElement>(0.3);
+  const [statsRef, statsInView] = useInView<HTMLDivElement>(0);
 
   return (
     <>

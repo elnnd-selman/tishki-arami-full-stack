@@ -30,7 +30,7 @@ export async function listBrands(query: ListBrandsQuery) {
   const filters: Prisma.BrandWhereInput[] = [];
   if (query.isActive !== undefined) filters.push({ isActive: query.isActive });
   if (query.search) {
-    const s = query.search;
+    const s = query.search.replace(/%/g, '\\%').replace(/_/g, '\\_');
     filters.push({
       OR: [
         { slug: { contains: s, mode: 'insensitive' } },

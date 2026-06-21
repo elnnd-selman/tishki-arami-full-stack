@@ -43,7 +43,7 @@ export function BrandFormPage() {
   const { id } = useParams<{ id: string }>();
   const isNew = !id || id === 'new';
 
-  const { data: brand, isLoading } = useBrandItem(isNew ? undefined : id);
+  const { data: brand, isLoading, isError } = useBrandItem(isNew ? undefined : id);
   const save = useSaveBrand(isNew ? undefined : id);
   const logo = useBrandLogo(id ?? '');
 
@@ -107,6 +107,17 @@ export function BrandFormPage() {
     return (
       <div className="center-screen">
         <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!isNew && isError) {
+    return (
+      <div className="stack">
+        <div className="empty">
+          <div className="empty-title">{t('errors.loadFailed')}</div>
+          <Link to="/brands" className="btn btn-outline">{t('common.back')}</Link>
+        </div>
       </div>
     );
   }
@@ -184,7 +195,7 @@ export function BrandFormPage() {
               ) : (
                 <SingleImageUploader
                   imageUrl={brand?.logo?.url ?? null}
-                  canEdit={can('brand.upload')}
+                  canEdit={can('brand.update')}
                   uploading={logo.upload.isPending}
                   removing={logo.remove.isPending}
                   onUpload={(file) =>

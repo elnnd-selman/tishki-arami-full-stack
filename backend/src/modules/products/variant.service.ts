@@ -1,5 +1,5 @@
 import { prisma } from '../../lib/prisma.js';
-import { NotFoundError } from '../../lib/errors.js';
+import { NotFoundError, ConflictError } from '../../lib/errors.js';
 import { getProduct } from './product.service.js';
 import type { CreateVariantInput, UpdateVariantInput } from './variant.schema.js';
 
@@ -19,25 +19,32 @@ async function ensureVariant(productId: string, variantId: string) {
 export async function createVariant(productId: string, input: CreateVariantInput) {
   await ensureProduct(productId);
 
-  // Count existing variants so we can append in order when sortOrder is omitted.
-  const count = await prisma.productVariant.count({ where: { productId } });
+  // Check SKU uniqueness within this product before inserting.
+  if (input.sku) {
+    const skuExists = await prisma.productVariant.findFirst({ where: { productId, sku: input.sku }, select: { id: true } });
+    if (skuExists) throw new ConflictError(`A variant with SKU "${input.sku}" already exists on this product`);
+  }
 
-  await prisma.productVariant.create({
-    data: {
-      productId,
-      sku: input.sku ?? null,
-      price: input.price ?? null,
-      currency: input.currency ?? 'USD',
-      isActive: input.isActive ?? true,
-      sortOrder: input.sortOrder ?? count,
-      attributes: {
-        create: (input.attributes ?? []).map((a, i) => ({
-          key: a.key,
-          value: a.value,
-          sortOrder: i,
-        })),
+  // Atomic: read count + create in one transaction to avoid duplicate sortOrder under concurrent requests.
+  await prisma.$transaction(async (tx) => {
+    const count = await tx.productVariant.count({ where: { productId } });
+    await tx.productVariant.create({
+      data: {
+        productId,
+        sku: input.sku ?? null,
+        price: input.price ?? null,
+        currency: input.currency ?? 'USD',
+        isActive: input.isActive ?? true,
+        sortOrder: input.sortOrder ?? count,
+        attributes: {
+          create: (input.attributes ?? []).map((a, i) => ({
+            key: a.key,
+            value: a.value,
+            sortOrder: i,
+          })),
+        },
       },
-    },
+    });
   });
 
   return getProduct(productId);
@@ -45,6 +52,15 @@ export async function createVariant(productId: string, input: CreateVariantInput
 
 export async function updateVariant(productId: string, variantId: string, input: UpdateVariantInput) {
   await ensureVariant(productId, variantId);
+
+  // Check SKU uniqueness within this product (exclude self).
+  if (input.sku) {
+    const skuExists = await prisma.productVariant.findFirst({
+      where: { productId, sku: input.sku, NOT: { id: variantId } },
+      select: { id: true },
+    });
+    if (skuExists) throw new ConflictError(`A variant with SKU "${input.sku}" already exists on this product`);
+  }
 
   await prisma.$transaction(async (tx) => {
     await tx.productVariant.update({

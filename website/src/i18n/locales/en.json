@@ -134,7 +134,7 @@
   },
   "about": {
     "title": "About TishkiArami",
-    "subtitle": "Your trusted partner for fire safety and fire protection systems.",
+    "subtitle": "Your trusted partner for fire safety and protection systems.",
     "storyTitle": "Built on safety and expertise",
     "story1": "TishkiArami is a specialist fire safety company based in Kurdistan, Iraq. We supply, install and maintain certified firefighting equipment and fire suppression systems for industrial plants, commercial buildings, hospitals, hotels and residential developments.",
     "story2": "Our experienced engineers work to international fire safety standards, ensuring every system we design and install meets local and international codes — giving our clients peace of mind and genuine protection.",
@@ -167,7 +167,8 @@
     "formMessage": "Message",
     "send": "Send message",
     "sending": "Sending...",
-    "success": "Thank you! Your message has been sent."
+    "success": "Thank you! Your message has been sent.",
+    "error": "Failed to send your message. Please try again."
   },
   "cta": {
     "title": "Need a fire safety assessment?",

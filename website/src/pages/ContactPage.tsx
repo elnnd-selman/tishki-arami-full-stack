@@ -3,26 +3,32 @@ import { useTranslation } from 'react-i18next';
 import { PageBanner } from '../components/PageBanner';
 import { IconMapPin, IconPhone, IconMail, IconClock, IconCheck } from '../components/Icons';
 import { Spinner } from '../components/Spinner';
+import { api } from '../lib/api';
 
 export function ContactPage() {
   const { t } = useTranslation();
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
 
   function set(k: keyof typeof form, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSending(true);
-    // No public contact endpoint yet - simulate a successful submission.
-    window.setTimeout(() => {
-      setSending(false);
+    setError('');
+    try {
+      await api.post('/contact', form);
       setSent(true);
       setForm({ name: '', email: '', subject: '', message: '' });
-    }, 700);
+    } catch {
+      setError(t('contact.error'));
+    } finally {
+      setSending(false);
+    }
   }
 
   const info = [
@@ -59,6 +65,14 @@ export function ContactPage() {
                 >
                   <IconCheck size={16} />
                   {t('contact.success')}
+                </div>
+              )}
+              {error && (
+                <div
+                  className="badge badge-red"
+                  style={{ width: '100%', justifyContent: 'center', padding: 12, marginBottom: 18, fontSize: 14 }}
+                >
+                  {error}
                 </div>
               )}
               <div className="field">

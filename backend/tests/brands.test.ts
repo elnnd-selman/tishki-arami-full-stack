@@ -93,7 +93,7 @@ describe('Brands - permissions & logo', () => {
     const up = await request(app)
       .put(`${API}/brands/${b.id}/logo`)
       .set(auth(adminToken))
-      .attach('image', await makeImageBuffer('png'), 'logo.png');
+      .attach('logo', await makeImageBuffer('png'), 'logo.png');
     expect(up.status).toBe(200);
     expect(up.body.data.logo.url).toBeTruthy();
 

@@ -185,7 +185,7 @@ export function BrandListPage() {
       <ConfirmDialog
         open={Boolean(toDelete)}
         title={t('brand.deleteTitle')}
-        body={t('brand.deleteBody')}
+        body={t('brand.deleteBody', { name: toDelete?.translations?.en?.name ?? toDelete?.slug })}
         loading={del.isPending}
         onConfirm={confirmDelete}
         onCancel={() => setToDelete(null)}

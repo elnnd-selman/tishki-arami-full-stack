@@ -18,13 +18,26 @@ export function ProductsPage() {
   const categorySlug = params.get('category') ?? '';
   const brandSlug = params.get('brand') ?? '';
   const page = Number(params.get('page') ?? '1');
-  const [sort, setSort] = useState('newest');
-  const [searchInput, setSearchInput] = useState(params.get('q') ?? '');
-  const [search, setSearch] = useState(params.get('q') ?? '');
+  const sort = params.get('sort') ?? 'newest';
+  const search = params.get('q') ?? '';
+  const [searchInput, setSearchInput] = useState(search);
 
+  // Keep searchInput in sync when URL changes externally (e.g. browser back/forward).
   useEffect(() => {
-    const id = setTimeout(() => setSearch(searchInput), 350);
+    setSearchInput(params.get('q') ?? '');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.get('q')]);
+
+  // Debounce: push search to URL after 350ms; reset page.
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const p = new URLSearchParams(params);
+      if (searchInput) p.set('q', searchInput); else p.delete('q');
+      p.delete('page');
+      setParams(p, { replace: true });
+    }, 350);
     return () => clearTimeout(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput]);
 
   const categories = useCategories();
@@ -37,7 +50,7 @@ export function ProductsPage() {
       if (v) p.set(k, v);
       else p.delete(k);
     }
-    p.delete('page'); // reset to first page on filter change
+    p.delete('page'); // reset to first page on any filter change
     setParams(p);
   }
 
@@ -119,7 +132,11 @@ export function ProductsPage() {
                     onChange={(e) => setSearchInput(e.target.value)}
                   />
                 </div>
-                <select className="select" value={sort} onChange={(e) => setSort(e.target.value)}>
+                <select
+                  className="select"
+                  value={sort}
+                  onChange={(e) => update({ sort: e.target.value })}
+                >
                   <option value="newest">{t('catalog.sortNewest')}</option>
                   <option value="oldest">{t('catalog.sortOldest')}</option>
                   <option value="name">{t('catalog.sortNameAsc')}</option>

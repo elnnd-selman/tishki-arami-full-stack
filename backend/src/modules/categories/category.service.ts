@@ -30,7 +30,7 @@ export async function listCategories(query: ListCategoriesQuery) {
   if (query.type) filters.push({ type: query.type });
   if (query.isActive !== undefined) filters.push({ isActive: query.isActive });
   if (query.search) {
-    const s = query.search;
+    const s = query.search.replace(/%/g, '\\%').replace(/_/g, '\\_');
     filters.push({
       OR: [
         { slug: { contains: s, mode: 'insensitive' } },
@@ -66,6 +66,16 @@ async function assertValidParent(parentId: string, selfId?: string) {
   if (selfId && parentId === selfId) throw new BadRequestError('A category cannot be its own parent');
   const parent = await prisma.category.findUnique({ where: { id: parentId }, select: { id: true } });
   if (!parent) throw new BadRequestError('The selected parent category does not exist');
+
+  // Walk the ancestor chain to prevent circular references (A→B→A).
+  if (selfId) {
+    let cur: string | null = parentId;
+    while (cur) {
+      if (cur === selfId) throw new BadRequestError('Circular parent reference: this would create a category loop');
+      const row: { parentId: string | null } | null = await prisma.category.findUnique({ where: { id: cur }, select: { parentId: true } });
+      cur = row?.parentId ?? null;
+    }
+  }
 }
 
 export async function createCategory(input: CreateCategoryInput) {
@@ -127,10 +137,15 @@ export async function deleteCategory(id: string) {
   });
   if (!cat) throw new NotFoundError('Category not found');
 
-  // Block deletion while content still references it, to avoid orphaning data.
-  const linked = cat._count.products + cat._count.services + cat._count.blogs;
+  // Block deletion while content or child categories still reference it.
+  const childCount = await prisma.category.count({ where: { parentId: id } });
+  const linked = cat._count.products + cat._count.services + cat._count.blogs + childCount;
   if (linked > 0) {
-    throw new ConflictError(`Cannot delete: ${linked} item(s) still use this category`);
+    throw new ConflictError(
+      childCount > 0
+        ? `Cannot delete: ${childCount} child categor${childCount === 1 ? 'y' : 'ies'} still reference this category`
+        : `Cannot delete: ${linked} item(s) still use this category`,
+    );
   }
 
   await prisma.category.delete({ where: { id } });

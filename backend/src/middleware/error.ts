@@ -31,7 +31,11 @@ export function errorHandler(
     const message =
       err.code === 'LIMIT_FILE_SIZE'
         ? `File too large (max ${env.upload.maxSizeMb}MB)`
-        : err.message;
+        : err.code === 'LIMIT_FILE_COUNT'
+          ? 'Too many files uploaded (maximum 20 per request)'
+          : err.code === 'LIMIT_UNEXPECTED_FILE'
+            ? `Unexpected field name. Use the correct multipart field name for this endpoint`
+            : err.message;
     return res.status(400).json({ success: false, error: { code: err.code, message } });
   }
 

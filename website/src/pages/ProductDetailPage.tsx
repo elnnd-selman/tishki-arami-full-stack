@@ -7,6 +7,7 @@ import { PageBanner } from '../components/PageBanner';
 import { ProductCard } from '../components/ProductCard';
 import { SectionHeading } from '../components/SectionHeading';
 import { Loader } from '../components/Spinner';
+import { NotFoundPage } from './NotFoundPage';
 import { IconImage, IconArrowRight, IconCheck } from '../components/Icons';
 import type { ProductVariant } from '../types';
 
@@ -14,12 +15,13 @@ export function ProductDetailPage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const { slug } = useParams<{ slug: string }>();
-  const { data, isLoading } = useProduct(slug);
+  const { data, isLoading, isError } = useProduct(slug);
   const [activeImg, setActiveImg] = useState(0);
   const [activeVariant, setActiveVariant] = useState<ProductVariant | null>(null);
 
   useEffect(() => { setActiveImg(0); setActiveVariant(null); }, [slug]);
 
+  if (isError) return <NotFoundPage />;
   if (isLoading || !data) return <Loader />;
 
   const { product, related } = data;

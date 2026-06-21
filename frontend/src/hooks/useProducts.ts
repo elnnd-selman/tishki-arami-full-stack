@@ -47,7 +47,7 @@ export function useCategories() {
   return useQuery({
     queryKey: ['lookup', 'categories'],
     queryFn: async (): Promise<Lookup[]> => {
-      const res = await api.get('/categories', { params: { type: 'PRODUCT', pageSize: 200, sortBy: 'name', sortDir: 'asc' } });
+      const res = await api.get('/categories', { params: { type: 'PRODUCT', pageSize: 100, sortBy: 'name', sortDir: 'asc' } });
       return res.data.data;
     },
   });
@@ -57,7 +57,7 @@ export function useBrands() {
   return useQuery({
     queryKey: ['lookup', 'brands'],
     queryFn: async (): Promise<Lookup[]> => {
-      const res = await api.get('/brands', { params: { pageSize: 200, sortBy: 'name', sortDir: 'asc' } });
+      const res = await api.get('/brands', { params: { pageSize: 100, sortBy: 'name', sortDir: 'asc' } });
       return res.data.data;
     },
   });

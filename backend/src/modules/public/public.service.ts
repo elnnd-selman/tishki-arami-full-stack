@@ -34,7 +34,7 @@ export async function listProducts(query: ProductQuery) {
   if (query.brandSlug) filters.push({ brand: { slug: query.brandSlug } });
   if (query.featured === 'true') filters.push({ isFeatured: true });
   if (query.search) {
-    const s = query.search;
+    const s = query.search.replace(/%/g, '\\%').replace(/_/g, '\\_');
     filters.push({
       OR: [
         { slug: { contains: s, mode: 'insensitive' } },
@@ -46,14 +46,14 @@ export async function listProducts(query: ProductQuery) {
   }
 
   const where: Prisma.ProductWhereInput = { AND: filters };
-  const sortDir = query.sortDir ?? 'desc';
+  const sortDir: 'asc' | 'desc' = query.sortDir === 'asc' ? 'asc' : 'desc';
   let orderBy: Prisma.ProductOrderByWithRelationInput;
   switch (query.sortBy) {
     case 'price':
-      orderBy = { price: sortDir };
+      orderBy = { price: 'asc' };
       break;
     case 'name':
-      orderBy = { slug: sortDir };
+      orderBy = { slug: 'asc' };
       break;
     case 'oldest':
       orderBy = { createdAt: 'asc' };

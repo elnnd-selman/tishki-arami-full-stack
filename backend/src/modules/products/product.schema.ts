@@ -13,13 +13,13 @@ const translationFields = z.object({
 const optionalId = z.string().trim().min(1).optional().nullable();
 
 export const createProductSchema = z.object({
-  slug: z.string().trim().max(220).optional(),
+  slug: z.string().trim().min(1).max(220).optional(),
   sku: z.string().trim().max(80).optional().nullable(),
   categoryId: z.string().trim().min(1, 'Category is required'),
   brandId: optionalId,
   status: z.nativeEnum(PublishStatus).optional(),
   isFeatured: z.boolean().optional(),
-  sortOrder: z.coerce.number().int().optional(),
+  sortOrder: z.coerce.number().int().min(0).optional(),
   price: z.coerce.number().nonnegative('Price cannot be negative').optional().nullable(),
   currency: z.string().trim().length(3).optional(),
   // English is mandatory; Arabic and Kurdish are optional but validated when present.
@@ -31,13 +31,13 @@ export const createProductSchema = z.object({
 });
 
 export const updateProductSchema = z.object({
-  slug: z.string().trim().max(220).optional(),
+  slug: z.string().trim().min(1).max(220).optional(),
   sku: z.string().trim().max(80).optional().nullable(),
   categoryId: z.string().trim().min(1).optional(),
   brandId: optionalId,
   status: z.nativeEnum(PublishStatus).optional(),
   isFeatured: z.boolean().optional(),
-  sortOrder: z.coerce.number().int().optional(),
+  sortOrder: z.coerce.number().int().min(0).optional(),
   price: z.coerce.number().nonnegative().optional().nullable(),
   currency: z.string().trim().length(3).optional(),
   translations: z

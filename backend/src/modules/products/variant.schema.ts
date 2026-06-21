@@ -26,7 +26,7 @@ export const createVariantSchema = z.object({
   price: z.coerce.number().nonnegative().optional().nullable(),
   currency: z.string().trim().length(3).optional(),
   isActive: z.boolean().optional(),
-  sortOrder: z.coerce.number().int().optional(),
+  sortOrder: z.coerce.number().int().min(0).optional(),
   attributes: z.array(attributeSchema).max(50).superRefine(uniqueKeys).optional(),
 });
 
@@ -35,7 +35,7 @@ export const updateVariantSchema = z.object({
   price: z.coerce.number().nonnegative().optional().nullable(),
   currency: z.string().trim().length(3).optional(),
   isActive: z.boolean().optional(),
-  sortOrder: z.coerce.number().int().optional(),
+  sortOrder: z.coerce.number().int().min(0).optional(),
   // When provided, the attribute set is REPLACED with this list.
   attributes: z.array(attributeSchema).max(50).superRefine(uniqueKeys).optional(),
 });

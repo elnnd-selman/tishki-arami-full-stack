@@ -17,7 +17,7 @@ router.post('/', authorize(PERMISSIONS.BRAND_CREATE), validate(createBrandSchema
 router.put('/:id', authorize(PERMISSIONS.BRAND_UPDATE), validate(updateBrandSchema), asyncHandler(ctrl.update));
 router.delete('/:id', authorize(PERMISSIONS.BRAND_DELETE), asyncHandler(ctrl.remove));
 
-router.put('/:id/logo', authorize(PERMISSIONS.BRAND_UPLOAD), uploadImages.single('image'), asyncHandler(ctrl.uploadLogo));
+router.put('/:id/logo', authorize(PERMISSIONS.BRAND_UPLOAD), uploadImages.single('logo'), asyncHandler(ctrl.uploadLogo));
 router.delete('/:id/logo', authorize(PERMISSIONS.BRAND_UPLOAD), asyncHandler(ctrl.deleteLogo));
 
 export default router;

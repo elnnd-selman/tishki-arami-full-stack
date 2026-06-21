@@ -5,7 +5,7 @@ import type { TranslationMap } from '../types';
 // VITE_API_BASE is empty in dev (Vite proxies /api) and set to the backend
 // service prefix (e.g. /_/backend) when deployed as a Vercel Service.
 const API_BASE = import.meta.env.VITE_API_BASE ?? '';
-export const api = axios.create({ baseURL: `${API_BASE}/api/v1/public` });
+export const api = axios.create({ baseURL: `${API_BASE}/api/v1/public`, timeout: 15000 });
 
 type LangArg = string | undefined;
 

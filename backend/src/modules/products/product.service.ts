@@ -53,7 +53,7 @@ export async function listProducts(query: ListProductsQuery) {
   if (query.isFeatured !== undefined) filters.push({ isFeatured: query.isFeatured });
 
   if (query.search) {
-    const s = query.search;
+    const s = query.search.replace(/%/g, '\\%').replace(/_/g, '\\_');
     filters.push({
       OR: [
         { slug: { contains: s, mode: 'insensitive' } },

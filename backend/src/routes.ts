@@ -5,6 +5,7 @@ import categoryRoutes from './modules/categories/category.routes.js';
 import brandRoutes from './modules/brands/brand.routes.js';
 import lookupRoutes from './modules/lookups/lookups.routes.js';
 import publicRoutes from './modules/public/public.routes.js';
+import contactRoutes from './modules/contact/contact.routes.js';
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.use('/auth', authRoutes);
 router.use('/products', productRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/brands', brandRoutes);
+router.use('/contact', contactRoutes);
 router.use('/', lookupRoutes); // /meta
 
 export default router;

@@ -51,8 +51,8 @@ export function CategoryFormPage() {
   const { id } = useParams<{ id: string }>();
   const isNew = !id || id === 'new';
 
-  const { data: category, isLoading } = useCategoryItem(isNew ? undefined : id);
-  const allCats = useCategoryList({ pageSize: 200, sortBy: 'name', sortDir: 'asc' });
+  const { data: category, isLoading, isError } = useCategoryItem(isNew ? undefined : id);
+  const allCats = useCategoryList({ pageSize: 100, sortBy: 'name', sortDir: 'asc' });
   const save = useSaveCategory(isNew ? undefined : id);
   const image = useCategoryImage(id ?? '');
 
@@ -118,6 +118,17 @@ export function CategoryFormPage() {
     return (
       <div className="center-screen">
         <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!isNew && isError) {
+    return (
+      <div className="stack">
+        <div className="empty">
+          <div className="empty-title">{t('errors.loadFailed')}</div>
+          <Link to="/categories" className="btn btn-outline">{t('common.back')}</Link>
+        </div>
       </div>
     );
   }
