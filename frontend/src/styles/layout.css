@@ -986,10 +986,32 @@
   .page-actions {
     width: 100%;
   }
+  /* Action buttons fill the row instead of wrapping awkwardly. */
+  .page-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
   .content {
     padding: 14px;
   }
-  /* Variant rows stack so chips/price/actions never overflow. */
+  /* Search + filters each take the full row so nothing is cramped. */
+  .search-box {
+    min-width: 0;
+    flex-basis: 100%;
+  }
+  .filter-select {
+    width: 100%;
+    min-width: 0;
+  }
+  /* Denser table cells so more fits before horizontal scroll kicks in. */
+  .table {
+    font-size: 13px;
+  }
+  .table thead th,
+  .table tbody td {
+    padding: 10px 12px;
+  }
+  /* Variant rows stack so chips/actions never overflow. */
   .variant-card {
     flex-wrap: wrap;
   }
