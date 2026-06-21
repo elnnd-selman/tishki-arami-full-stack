@@ -211,6 +211,10 @@ model ProductVariant {
   currency  String   @default("USD")
   isActive  Boolean  @default(true)
   sortOrder Int      @default(0)
+  imagePath              String?
+  imageWebpPath          String?
+  imageThumbnailPath     String?
+  imageThumbnailWebpPath String?
 
   // Custom attributes are stored as real rows (key + value columns), NOT JSON.
   attributes ProductVariantAttribute[]

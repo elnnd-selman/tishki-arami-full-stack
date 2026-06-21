@@ -59,6 +59,13 @@ export interface VariantAttribute {
   sortOrder: number;
 }
 
+export interface ImageUrls {
+  url: string;
+  webpUrl: string | null;
+  thumbnailUrl: string | null;
+  thumbnailWebpUrl: string | null;
+}
+
 export interface ProductVariant {
   id: string;
   sku: string | null;
@@ -67,6 +74,7 @@ export interface ProductVariant {
   isActive: boolean;
   sortOrder: number;
   attributes: VariantAttribute[];
+  image: ImageUrls | null;
 }
 
 export interface Product {

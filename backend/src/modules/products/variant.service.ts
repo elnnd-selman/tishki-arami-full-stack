@@ -1,6 +1,7 @@
 import { prisma } from '../../lib/prisma.js';
 import { NotFoundError, ConflictError } from '../../lib/errors.js';
 import { getProduct } from './product.service.js';
+import { processImage, deleteImageVariants } from '../../services/image.service.js';
 import type { CreateVariantInput, UpdateVariantInput } from './variant.schema.js';
 
 async function ensureProduct(productId: string) {
@@ -92,5 +93,52 @@ export async function deleteVariant(productId: string, variantId: string) {
   await ensureVariant(productId, variantId);
   // Cascade removes the variant's attribute rows.
   await prisma.productVariant.delete({ where: { id: variantId } });
+  return getProduct(productId);
+}
+
+export async function uploadVariantImage(productId: string, variantId: string, buffer: Buffer, mime: string) {
+  await ensureVariant(productId, variantId);
+  const old = await prisma.productVariant.findUnique({
+    where: { id: variantId },
+    select: { imagePath: true, imageWebpPath: true, imageThumbnailPath: true, imageThumbnailWebpPath: true },
+  });
+  if (old?.imagePath) {
+    await deleteImageVariants({
+      path: old.imagePath,
+      webpPath: old.imageWebpPath,
+      thumbnailPath: old.imageThumbnailPath,
+      thumbnailWebpPath: old.imageThumbnailWebpPath,
+    });
+  }
+  const processed = await processImage(buffer, `variants/${variantId}`);
+  await prisma.productVariant.update({
+    where: { id: variantId },
+    data: {
+      imagePath: processed.path,
+      imageWebpPath: processed.webpPath,
+      imageThumbnailPath: processed.thumbnailPath,
+      imageThumbnailWebpPath: processed.thumbnailWebpPath,
+    },
+  });
+  return getProduct(productId);
+}
+
+export async function removeVariantImage(productId: string, variantId: string) {
+  await ensureVariant(productId, variantId);
+  const v = await prisma.productVariant.findUnique({
+    where: { id: variantId },
+    select: { imagePath: true, imageWebpPath: true, imageThumbnailPath: true, imageThumbnailWebpPath: true },
+  });
+  if (!v?.imagePath) return getProduct(productId);
+  await deleteImageVariants({
+    path: v.imagePath,
+    webpPath: v.imageWebpPath,
+    thumbnailPath: v.imageThumbnailPath,
+    thumbnailWebpPath: v.imageThumbnailWebpPath,
+  });
+  await prisma.productVariant.update({
+    where: { id: variantId },
+    data: { imagePath: null, imageWebpPath: null, imageThumbnailPath: null, imageThumbnailWebpPath: null },
+  });
   return getProduct(productId);
 }

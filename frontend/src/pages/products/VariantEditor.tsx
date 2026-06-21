@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { useSaveVariant } from '../../hooks/useProducts';
+import { useSaveVariant, useVariantImage } from '../../hooks/useProducts';
 import { errorMessage } from '../../lib/api';
 import { useToast } from '../../components/ui/Toast';
 import { Spinner } from '../../components/ui/Spinner';
 import { IconPlus, IconClose, IconTrash } from '../../components/ui/Icons';
+import { SingleImageUploader } from '../../components/ui/SingleImageUploader';
+import { useAuth } from '../../auth/AuthContext';
 import type { ProductVariant } from '../../types/api';
 
 // `uid` is a stable React key so removing a middle row keeps each input bound to
@@ -25,7 +27,9 @@ interface Props {
 export function VariantEditor({ productId, variant, onClose }: Props) {
   const { t } = useTranslation();
   const toast = useToast();
+  const { can } = useAuth();
   const save = useSaveVariant(productId);
+  const variantImg = useVariantImage(productId, variant?.id ?? '');
 
   const uidRef = useRef(0);
   const newRow = (key = '', value = ''): AttrRow => ({ uid: ++uidRef.current, key, value });
@@ -176,6 +180,28 @@ export function VariantEditor({ productId, variant, onClose }: Props) {
             <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
             <span>{t('common.active')}</span>
           </label>
+
+          {variant && (
+            <div className="field">
+              <label className="label">{t('variant.image')}</label>
+              <SingleImageUploader
+                imageUrl={variant.image?.url ?? null}
+                canEdit={can('product.upload')}
+                uploading={variantImg.upload.isPending}
+                removing={variantImg.remove.isPending}
+                onUpload={(file) =>
+                  variantImg.upload.mutateAsync(file)
+                    .then(() => toast.success(t('image.uploaded')))
+                    .catch((e) => toast.error(errorMessage(e)))
+                }
+                onRemove={() =>
+                  variantImg.remove.mutateAsync()
+                    .then(() => toast.success(t('image.removed')))
+                    .catch((e) => toast.error(errorMessage(e)))
+                }
+              />
+            </div>
+          )}
         </div>
 
         <div className="modal-footer">

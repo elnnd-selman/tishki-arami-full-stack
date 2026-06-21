@@ -100,4 +100,16 @@ router.delete(
   asyncHandler(variantCtrl.remove),
 );
 
+router.post(
+  '/:id/variants/:variantId/image',
+  authorize(PERMISSIONS.PRODUCT_UPLOAD),
+  uploadImages.single('image'),
+  asyncHandler(variantCtrl.uploadImage),
+);
+router.delete(
+  '/:id/variants/:variantId/image',
+  authorize(PERMISSIONS.PRODUCT_UPLOAD),
+  asyncHandler(variantCtrl.removeImage),
+);
+
 export default router;

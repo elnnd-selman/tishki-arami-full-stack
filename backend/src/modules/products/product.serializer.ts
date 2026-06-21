@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import { mapTranslations } from '../../utils/i18n.js';
-import { toPublicUrl } from '../../services/image.service.js';
+import { toPublicUrl, singleImageUrls } from '../../services/image.service.js';
 
 // The exact shape we load for serialization. Keep in sync with the service includes.
 export const productInclude = {
@@ -82,6 +82,9 @@ export function serializeProduct(product: ProductWithRelations) {
       currency: v.currency,
       isActive: v.isActive,
       sortOrder: v.sortOrder,
+      image: v.imagePath
+        ? singleImageUrls({ path: v.imagePath, webpPath: v.imageWebpPath, thumbPath: v.imageThumbnailPath, thumbWebpPath: v.imageThumbnailWebpPath })
+        : null,
       attributes: v.attributes.map((a) => ({
         id: a.id,
         key: a.key,

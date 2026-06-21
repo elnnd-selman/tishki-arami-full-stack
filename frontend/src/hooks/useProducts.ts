@@ -190,3 +190,24 @@ export function useDeleteVariant(productId: string) {
     onSuccess: (p) => patchProductCache(qc, p),
   });
 }
+
+export function useVariantImage(productId: string, variantId: string) {
+  const qc = useQueryClient();
+  const upload = useMutation({
+    mutationFn: async (file: File): Promise<Product> => {
+      const form = new FormData();
+      form.append('image', file);
+      const res = await api.post(`/products/${productId}/variants/${variantId}/image`, form);
+      return res.data.data;
+    },
+    onSuccess: (p) => patchProductCache(qc, p),
+  });
+  const remove = useMutation({
+    mutationFn: async (): Promise<Product> => {
+      const res = await api.delete(`/products/${productId}/variants/${variantId}/image`);
+      return res.data.data;
+    },
+    onSuccess: (p) => patchProductCache(qc, p),
+  });
+  return { upload, remove };
+}

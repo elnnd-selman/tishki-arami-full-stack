@@ -129,3 +129,53 @@ describe('Variants - permissions', () => {
     expect(res.status).toBe(401);
   });
 });
+
+// Tiny 1×1 PNG used for upload tests.
+const TINY_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+  'base64',
+);
+
+describe('Variants - image upload', () => {
+  let variantId: string;
+
+  beforeEach(async () => {
+    const created = await request(app)
+      .post(`${API}/products/${productId}/variants`)
+      .set(auth(adminToken))
+      .send(variantBody());
+    variantId = created.body.data.variants[0].id;
+  });
+
+  it('uploads a variant image and returns URLs', async () => {
+    const res = await request(app)
+      .post(`${API}/products/${productId}/variants/${variantId}/image`)
+      .set(auth(adminToken))
+      .attach('image', TINY_PNG, { filename: 'test.png', contentType: 'image/png' });
+    expect(res.status).toBe(200);
+    const variant = res.body.data.variants.find((v: any) => v.id === variantId);
+    expect(variant.image).not.toBeNull();
+    expect(variant.image.url).toMatch(/uploads/);
+  });
+
+  it('removes the variant image', async () => {
+    await request(app)
+      .post(`${API}/products/${productId}/variants/${variantId}/image`)
+      .set(auth(adminToken))
+      .attach('image', TINY_PNG, { filename: 'test.png', contentType: 'image/png' });
+    const res = await request(app)
+      .delete(`${API}/products/${productId}/variants/${variantId}/image`)
+      .set(auth(adminToken));
+    expect(res.status).toBe(200);
+    const variant = res.body.data.variants.find((v: any) => v.id === variantId);
+    expect(variant.image).toBeNull();
+  });
+
+  it('requires product.upload permission to upload variant image', async () => {
+    const res = await request(app)
+      .post(`${API}/products/${productId}/variants/${variantId}/image`)
+      .set(auth(viewerToken))
+      .attach('image', TINY_PNG, { filename: 'test.png', contentType: 'image/png' });
+    expect(res.status).toBe(403);
+  });
+});

@@ -31,7 +31,8 @@ export function ProductDetailPage() {
   const brandName = product.brand ? pickName(product.brand.translations, lang) : '';
   const categoryName = product.category ? pickName(product.category.translations, lang) : '';
   const images = product.images.length ? product.images : product.coverImage ? [product.coverImage] : [];
-  const main = images[activeImg] ?? null;
+  const variantImage = activeVariant?.image ?? null;
+  const main = variantImage ?? images[activeImg] ?? null;
   const activeVariants = product.variants.filter((v) => v.isActive);
 
   return (
@@ -113,28 +114,45 @@ export function ProductDetailPage() {
               {activeVariants.length > 0 && (
                 <div className="pdp-section">
                   <h3>{t('product.variants')}</h3>
-                  <div className="variant-selector">
-                    {activeVariants.map((v) => (
-                      <button
-                        key={v.id}
-                        type="button"
-                        className={`variant-option ${activeVariant?.id === v.id ? 'active' : ''}`}
-                        onClick={() => setActiveVariant(activeVariant?.id === v.id ? null : v)}
-                      >
-                        <div className="attr-chips">
-                          {v.attributes.map((a) => (
-                            <span key={a.id} className="attr-chip">
-                              <b>{a.key}</b>
-                              <span>{a.value}</span>
-                            </span>
-                          ))}
-                        </div>
-                        {v.sku && <span className="variant-sku">{v.sku}</span>}
-                        <span className="variant-check">
-                          <IconCheck size={18} />
-                        </span>
-                      </button>
-                    ))}
+                  <div className="variant-list">
+                    {activeVariants.map((v) => {
+                      const isActive = activeVariant?.id === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          className={`variant-card ${isActive ? 'active' : ''}`}
+                          onClick={() => setActiveVariant(isActive ? null : v)}
+                        >
+                          {v.image && (
+                            <div className="variant-card-img">
+                              <img src={v.image.thumbnailUrl ?? v.image.url} alt="" />
+                            </div>
+                          )}
+                          <div className="variant-card-body">
+                            <div className="variant-attrs">
+                              {v.attributes.map((a) => (
+                                <span key={a.id} className="variant-attr-tag">
+                                  <span className="variant-attr-key">{a.key}</span>
+                                  <span className="variant-attr-val">{a.value}</span>
+                                </span>
+                              ))}
+                            </div>
+                            {v.sku && <span className="variant-sku-label">{v.sku}</span>}
+                          </div>
+                          <div className="variant-card-price">
+                            {v.price != null ? (
+                              <span className="variant-price-num">
+                                {v.price.toLocaleString()} <span className="variant-currency">{v.currency}</span>
+                              </span>
+                            ) : (
+                              <span className="variant-price-contact">{t('common.contactForPrice')}</span>
+                            )}
+                            <span className="variant-check-mark"><IconCheck size={14} /></span>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

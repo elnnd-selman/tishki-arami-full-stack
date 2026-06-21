@@ -149,7 +149,8 @@
     "deleteBody": "This permanently removes the variant and its attributes.",
     "created": "Variant added",
     "updated": "Variant updated",
-    "deleted": "Variant removed"
+    "deleted": "Variant removed",
+    "image": "Variant image"
   },
   "image": {
     "manager": "Image manager",

@@ -34,6 +34,7 @@ export interface ProductVariant {
   price: number | null;
   currency: string;
   isActive: boolean;
+  image: { url: string; webpUrl: string | null; thumbnailUrl: string | null; thumbnailWebpUrl: string | null } | null;
   attributes: VariantAttribute[];
 }
 
