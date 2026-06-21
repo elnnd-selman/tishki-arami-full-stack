@@ -551,8 +551,11 @@
   transition: background 0.3s;
 }
 .project-card:hover .project-overlay::before { background: rgba(8,14,28,0.7); }
-.project-overlay > * { position: relative; z-index: 1; }
-.project-overlay h3 { color: #fff; font-size: 20px; font-weight: 700; }
+.project-overlay > * { position: relative; z-index: 1; max-width: 100%; }
+.project-overlay h3 {
+  color: #fff; font-size: 20px; font-weight: 700; line-height: 1.35;
+  overflow-wrap: break-word; word-break: break-word; hyphens: auto;
+}
 .project-overlay .meta { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 5px; }
 .project-empty { width: 100%; height: 100%; display: grid; place-items: center; color: var(--slate-500); }
 .project-year-tag {
@@ -800,6 +803,9 @@
   .variant-card { gap: 10px; padding: 12px; }
   .variant-attr-table th { width: auto; white-space: normal; }
   .variant-card-img { width: 44px; height: 44px; }
+  /* Project cards: tighter overlay + smaller title so long names fit */
+  .project-overlay { padding: 18px; }
+  .project-overlay h3 { font-size: 17px; }
 }
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
