@@ -116,7 +116,7 @@ export async function processImage(
     webpPath: relWebp,
     thumbnailPath: relThumb,
     thumbnailWebpPath: relThumbWebp,
-    mimeType: declaredMime && declaredMime.startsWith('image/') ? mainMime : mainMime,
+    mimeType: mainMime,
     sizeBytes: mainInfo.size,
     width: mainInfo.width,
     height: mainInfo.height,

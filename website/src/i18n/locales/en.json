@@ -203,6 +203,8 @@
     "lead": "A TishkiArami story",
     "ch1": "Response",
     "ch2": "Danger",
-    "ch3": "Protected"
+    "ch3": "Protected",
+    "handStart": "Control with hand",
+    "handStop": "Stop camera"
   }
 }
