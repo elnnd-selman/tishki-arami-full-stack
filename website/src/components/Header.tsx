@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { IconMenu, IconClose } from './Icons';
-import { useEffect } from 'react';
 
 const NAV = [
   { to: '/', key: 'nav.home', end: true },
@@ -23,6 +23,16 @@ export function Header() {
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => setOpen(false), [location.pathname]);
+
+  // Lock body scroll while the drawer is open.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
     <header className="site-header">
@@ -54,33 +64,35 @@ export function Header() {
         </div>
       </div>
 
-      {open && (
-        <>
-          <div className="drawer-backdrop" onClick={() => setOpen(false)} />
-          <aside className="drawer">
-            <div className="drawer-head">
-              <span className="brand" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <img src="/logo.png" alt="" className="brand-logo-img" style={{ width: 32, height: 32 }} />
-                <span className="brand-name">
-                  {t('brand.name')}
-                  <span>{t('brand.accent')}</span>
+      {open &&
+        createPortal(
+          <>
+            <div className="drawer-backdrop" onClick={() => setOpen(false)} />
+            <aside className="drawer">
+              <div className="drawer-head">
+                <span className="brand" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <img src="/logo.png" alt="" className="brand-logo-img" style={{ width: 32, height: 32 }} />
+                  <span className="brand-name">
+                    {t('brand.name')}
+                    <span>{t('brand.accent')}</span>
+                  </span>
                 </span>
-              </span>
-              <button type="button" className="icon-btn" aria-label="Close" onClick={() => setOpen(false)}>
-                <IconClose />
-              </button>
-            </div>
-            {NAV.concat([{ to: '/contact', key: 'nav.contact' }]).map((n) => (
-              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-                {t(n.key)}
-              </NavLink>
-            ))}
-            <div style={{ marginTop: 16 }}>
-              <LanguageSwitcher />
-            </div>
-          </aside>
-        </>
-      )}
+                <button type="button" className="icon-btn" aria-label="Close" onClick={() => setOpen(false)}>
+                  <IconClose />
+                </button>
+              </div>
+              {NAV.concat([{ to: '/contact', key: 'nav.contact' }]).map((n) => (
+                <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+                  {t(n.key)}
+                </NavLink>
+              ))}
+              <div style={{ marginTop: 16 }}>
+                <LanguageSwitcher />
+              </div>
+            </aside>
+          </>,
+          document.body,
+        )}
     </header>
   );
 }
