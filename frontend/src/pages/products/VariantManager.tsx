@@ -63,6 +63,15 @@ export function VariantManager({ product }: { product: Product }) {
           <div className="variant-list">
             {product.variants.map((v) => (
               <div key={v.id} className="variant-card">
+                <div className="variant-thumb">
+                  {v.image ? (
+                    <img src={v.image.thumbnailUrl ?? v.image.url} alt="" />
+                  ) : (
+                    <span className="variant-thumb-empty">
+                      <IconLayers size={18} />
+                    </span>
+                  )}
+                </div>
                 <div className="variant-attrs">
                   {v.attributes.length === 0 ? (
                     <span className="muted text-sm">{t('variant.noAttributes')}</span>

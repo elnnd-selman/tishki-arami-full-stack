@@ -694,6 +694,30 @@
   border-radius: var(--radius);
   background: var(--slate-50);
 }
+.variant-thumb {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.variant-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.variant-thumb-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-400);
+  background: var(--slate-100);
+}
 .variant-attrs {
   display: flex;
   flex-wrap: wrap;
