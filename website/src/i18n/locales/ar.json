@@ -33,7 +33,6 @@
     "noResultsDesc": "حاول تعديل البحث أو الفلاتر.",
     "previous": "السابق",
     "next": "التالي",
-    "contactForPrice": "اتصل لمعرفة السعر",
     "getInTouch": "تواصل معنا"
   },
   "hero": {
@@ -79,7 +78,6 @@
     "brand": "العلامة",
     "category": "الفئة",
     "attribute": "المتغيّر",
-    "price": "السعر",
     "requestQuote": "اطلب عرض سعر",
     "selectedVariant": "النوع المحدد",
     "noImage": "لا توجد صورة"
@@ -96,9 +94,7 @@
     "sort": "ترتيب",
     "sortNewest": "الأحدث",
     "sortOldest": "الأقدم",
-    "sortNameAsc": "الاسم أ-ي",
-    "sortPriceAsc": "السعر: من الأقل للأعلى",
-    "sortPriceDesc": "السعر: من الأعلى للأقل"
+    "sortNameAsc": "الاسم أ-ي"
   },
   "categories": {
     "title": "الفئات",

@@ -48,8 +48,6 @@ export function serializeProduct(product: ProductWithRelations) {
     status: product.status,
     isFeatured: product.isFeatured,
     sortOrder: product.sortOrder,
-    price: product.price ? Number(product.price) : null,
-    currency: product.currency,
     categoryId: product.categoryId,
     brandId: product.brandId,
     category: product.category
@@ -78,8 +76,6 @@ export function serializeProduct(product: ProductWithRelations) {
     variants: product.variants.map((v) => ({
       id: v.id,
       sku: v.sku,
-      price: v.price ? Number(v.price) : null,
-      currency: v.currency,
       isActive: v.isActive,
       sortOrder: v.sortOrder,
       image: v.imagePath

@@ -155,8 +155,6 @@ export function useSetCover(productId: string) {
 // ---- Variant mutations ----
 export interface VariantPayload {
   sku?: string | null;
-  price?: number | null;
-  currency?: string;
   isActive?: boolean;
   attributes: Array<{ key: string; value: string }>;
 }

@@ -184,8 +184,6 @@ model Product {
   status     PublishStatus @default(DRAFT)
   isFeatured Boolean       @default(false)
   sortOrder  Int           @default(0)
-  price      Decimal?      @db.Decimal(12, 2)
-  currency   String        @default("USD")
 
   translations ProductTranslation[]
   images       ProductImage[]
@@ -207,8 +205,6 @@ model ProductVariant {
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   sku       String?
-  price     Decimal? @db.Decimal(12, 2)
-  currency  String   @default("USD")
   isActive  Boolean  @default(true)
   sortOrder Int      @default(0)
   imagePath              String?

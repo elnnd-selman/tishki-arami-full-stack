@@ -130,26 +130,23 @@ export function ProductDetailPage() {
                             </div>
                           )}
                           <div className="variant-card-body">
-                            <div className="variant-attrs">
-                              {v.attributes.map((a) => (
-                                <span key={a.id} className="variant-attr-tag">
-                                  <span className="variant-attr-key">{a.key}</span>
-                                  <span className="variant-attr-val">{a.value}</span>
-                                </span>
-                              ))}
-                            </div>
+                            {v.attributes.length > 0 ? (
+                              <table className="variant-attr-table">
+                                <tbody>
+                                  {v.attributes.map((a) => (
+                                    <tr key={a.id}>
+                                      <th>{a.key}</th>
+                                      <td>{a.value}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <span className="variant-sku-label">{t('product.attribute')}</span>
+                            )}
                             {v.sku && <span className="variant-sku-label">{v.sku}</span>}
                           </div>
-                          <div className="variant-card-price">
-                            {v.price != null ? (
-                              <span className="variant-price-num">
-                                {v.price.toLocaleString()} <span className="variant-currency">{v.currency}</span>
-                              </span>
-                            ) : (
-                              <span className="variant-price-contact">{t('common.contactForPrice')}</span>
-                            )}
-                            <span className="variant-check-mark"><IconCheck size={14} /></span>
-                          </div>
+                          <span className="variant-check-mark"><IconCheck size={14} /></span>
                         </button>
                       );
                     })}

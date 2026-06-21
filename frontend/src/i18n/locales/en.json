@@ -69,8 +69,6 @@
     "sku": "SKU",
     "category": "Category",
     "brand": "Brand",
-    "price": "Price",
-    "currency": "Currency",
     "featured": "Featured",
     "sortOrder": "Sort order",
     "shortDescription": "Short description",
@@ -144,7 +142,7 @@
     "attrIncomplete": "Each attribute needs both a key and a value",
     "attrDuplicate": "Attribute keys must be unique",
     "emptyTitle": "No variants yet",
-    "emptyBody": "Add a variant with its own attributes, SKU and price.",
+    "emptyBody": "Add a variant with its own attributes and SKU.",
     "deleteTitle": "Delete variant",
     "deleteBody": "This permanently removes the variant and its attributes.",
     "created": "Variant added",
@@ -186,5 +184,5 @@
     "quickActions": "Quick actions",
     "manageProducts": "Manage products"
   },
-  "errors": { "generic": "Something went wrong", "loadFailed": "Failed to load data" }
+  "errors": { "generic": "Something went wrong", "loadFailed": "Failed to load data", "notFound": "Not found" }
 }

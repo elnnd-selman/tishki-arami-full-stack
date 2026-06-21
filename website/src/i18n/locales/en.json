@@ -33,7 +33,6 @@
     "noResultsDesc": "Try adjusting your search or filters.",
     "previous": "Previous",
     "next": "Next",
-    "contactForPrice": "Contact for price",
     "getInTouch": "Get in touch"
   },
   "hero": {
@@ -79,7 +78,6 @@
     "brand": "Brand",
     "category": "Category",
     "attribute": "Variant",
-    "price": "Price",
     "requestQuote": "Request a quote",
     "selectedVariant": "Selected variant",
     "noImage": "No image available"
@@ -96,9 +94,7 @@
     "sort": "Sort",
     "sortNewest": "Newest",
     "sortOldest": "Oldest",
-    "sortNameAsc": "Name A-Z",
-    "sortPriceAsc": "Price: low to high",
-    "sortPriceDesc": "Price: high to low"
+    "sortNameAsc": "Name A-Z"
   },
   "categories": {
     "title": "Categories",

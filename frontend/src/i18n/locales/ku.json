@@ -69,8 +69,6 @@
     "sku": "SKU",
     "category": "هاوپۆل",
     "brand": "براند",
-    "price": "نرخ",
-    "currency": "دراو",
     "featured": "تایبەت",
     "sortOrder": "ڕیزبەندی",
     "shortDescription": "وەسفی کورت",
@@ -186,5 +184,5 @@
     "quickActions": "کردارە خێراکان",
     "manageProducts": "بەڕێوەبردنی بەرهەمەکان"
   },
-  "errors": { "generic": "هەڵەیەک ڕوویدا", "loadFailed": "بارکردنی داتا سەرکەوتوو نەبوو" }
+  "errors": { "generic": "هەڵەیەک ڕوویدا", "loadFailed": "بارکردنی داتا سەرکەوتوو نەبوو", "notFound": "نەدۆزرایەوە" }
 }

@@ -20,8 +20,6 @@ export const createProductSchema = z.object({
   status: z.nativeEnum(PublishStatus).optional(),
   isFeatured: z.boolean().optional(),
   sortOrder: z.coerce.number().int().min(0).optional(),
-  price: z.coerce.number().nonnegative('Price cannot be negative').optional().nullable(),
-  currency: z.string().trim().length(3).optional(),
   // English is mandatory; Arabic and Kurdish are optional but validated when present.
   translations: z.object({
     en: translationFields,
@@ -38,8 +36,6 @@ export const updateProductSchema = z.object({
   status: z.nativeEnum(PublishStatus).optional(),
   isFeatured: z.boolean().optional(),
   sortOrder: z.coerce.number().int().min(0).optional(),
-  price: z.coerce.number().nonnegative().optional().nullable(),
-  currency: z.string().trim().length(3).optional(),
   translations: z
     .object({
       en: translationFields.optional(),
@@ -61,7 +57,7 @@ export const listProductsSchema = z.object({
     .enum(['true', 'false'])
     .transform((v) => v === 'true')
     .optional(),
-  sortBy: z.enum(['createdAt', 'updatedAt', 'sortOrder', 'price', 'name']).optional(),
+  sortBy: z.enum(['createdAt', 'updatedAt', 'sortOrder', 'name']).optional(),
   sortDir: z.enum(['asc', 'desc']).optional(),
   locale: z.enum(['en', 'ar', 'ku']).optional(),
 });

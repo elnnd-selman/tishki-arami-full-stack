@@ -334,32 +334,31 @@ type SeedProduct = {
   sku: string;
   category: string;
   brand: string;
-  price: string;
   featured?: boolean;
   imageQuery: string;
   images?: number;
   tr: Trs;
-  variants?: Array<{ sku: string; price: string; attrs: Record<string, string> }>;
+  variants?: Array<{ sku: string; attrs: Record<string, string> }>;
 };
 
 const PRODUCTS: SeedProduct[] = [
   {
     slug: 'abc-dry-powder-extinguisher-6kg', sku: 'EXT-ABC-6', category: 'fire-extinguishers', brand: 'naffco',
-    price: '49.00', featured: true, imageQuery: 'fire extinguisher', images: 3,
+ featured: true, imageQuery: 'fire extinguisher', images: 3,
     tr: {
       en: { name: 'ABC Dry Powder Extinguisher 6kg', shortDescription: 'Multi-purpose powder extinguisher for Class A, B and C fires.', description: 'A versatile 6kg ABC dry powder extinguisher suitable for solid, liquid and gas fires. Corrosion-resistant cylinder, squeeze-grip operation and a pressure gauge for at-a-glance readiness. CE marked and rated for commercial and industrial use.' },
       ar: { name: 'طفاية بودرة جافة ABC وزن 6 كغ', shortDescription: 'طفاية بودرة متعددة الأغراض لحرائق الفئات A وB وC.', description: 'طفاية بودرة جافة ABC وزن 6 كغ مناسبة لحرائق المواد الصلبة والسائلة والغازية. أسطوانة مقاومة للتآكل ومقياس ضغط للجاهزية الفورية. تحمل علامة CE للاستخدام التجاري والصناعي.' },
       ku: { name: 'دەزگای پۆودەری وشک ABC ٦ کگ', shortDescription: 'دەزگای پۆودەری فرەمەبەست بۆ ئاگری پۆلی A، B و C.', description: 'دەزگایەکی پۆودەری وشکی ABC ی ٦ کگ گونجاو بۆ ئاگری ماددەی ڕەق و شل و گاز. سیلندری بەرگری لە ژەنگ و پێوەری گوشار بۆ ئامادەیی خێرا. نیشانەی CE ی هەیە بۆ بەکارهێنانی بازرگانی و پیشەسازی.' },
     },
     variants: [
-      { sku: 'EXT-ABC-2', price: '24.00', attrs: { Capacity: '2 kg', 'Fire Rating': '8A 34B C' } },
-      { sku: 'EXT-ABC-6', price: '49.00', attrs: { Capacity: '6 kg', 'Fire Rating': '27A 183B C' } },
-      { sku: 'EXT-ABC-9', price: '69.00', attrs: { Capacity: '9 kg', 'Fire Rating': '43A 233B C' } },
+      { sku: 'EXT-ABC-2', attrs: { Capacity: '2 kg', 'Fire Rating': '8A 34B C' } },
+      { sku: 'EXT-ABC-6', attrs: { Capacity: '6 kg', 'Fire Rating': '27A 183B C' } },
+      { sku: 'EXT-ABC-9', attrs: { Capacity: '9 kg', 'Fire Rating': '43A 233B C' } },
     ],
   },
   {
     slug: 'co2-extinguisher-5kg', sku: 'EXT-CO2-5', category: 'fire-extinguishers', brand: 'kidde',
-    price: '89.00', featured: true, imageQuery: 'fire extinguisher', images: 2,
+ featured: true, imageQuery: 'fire extinguisher', images: 2,
     tr: {
       en: { name: 'CO2 Fire Extinguisher 5kg', shortDescription: 'Clean, residue-free extinguisher for electrical and Class B fires.', description: 'A 5kg carbon-dioxide extinguisher ideal for server rooms, switchgear and flammable liquids. Leaves no residue, with a frost-free horn and ergonomic handle for safe discharge.' },
       ar: { name: 'طفاية ثاني أكسيد الكربون 5 كغ', shortDescription: 'طفاية نظيفة بدون بقايا للحرائق الكهربائية والفئة B.', description: 'طفاية ثاني أكسيد الكربون 5 كغ مثالية لغرف الخوادم ولوحات الكهرباء والسوائل القابلة للاشتعال. لا تترك بقايا، مع بوق مضاد للصقيع ومقبض مريح.' },
@@ -368,7 +367,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'foam-extinguisher-9l', sku: 'EXT-FOAM-9', category: 'fire-extinguishers', brand: 'naffco',
-    price: '64.00', imageQuery: 'fire extinguisher', images: 2,
+ imageQuery: 'fire extinguisher', images: 2,
     tr: {
       en: { name: 'AFFF Foam Extinguisher 9L', shortDescription: 'Aqueous film-forming foam for Class A and B fires.', description: 'A 9-litre AFFF foam extinguisher that smothers flames and seals flammable-liquid surfaces to prevent re-ignition. Excellent for warehouses, garages and fuel stores.' },
       ar: { name: 'طفاية رغوة AFFF سعة 9 لتر', shortDescription: 'رغوة مائية للحرائق من الفئتين A وB.', description: 'طفاية رغوة AFFF سعة 9 لتر تخمد اللهب وتغلق أسطح السوائل القابلة للاشتعال لمنع إعادة الاشتعال. ممتازة للمستودعات والكراجات ومخازن الوقود.' },
@@ -377,7 +376,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'wet-chemical-extinguisher-6l', sku: 'EXT-WET-6', category: 'fire-extinguishers', brand: 'tyco',
-    price: '79.00', imageQuery: 'fire extinguisher', images: 2,
+ imageQuery: 'fire extinguisher', images: 2,
     tr: {
       en: { name: 'Wet Chemical Extinguisher 6L', shortDescription: 'Class F protection for cooking-oil and fat fires.', description: 'A 6-litre wet chemical extinguisher engineered for commercial kitchens. Cools and seals burning oils and fats, with a long lance for safe application from distance.' },
       ar: { name: 'طفاية كيميائية رطبة 6 لتر', shortDescription: 'حماية من الفئة F لحرائق زيوت الطهي والدهون.', description: 'طفاية كيميائية رطبة سعة 6 لتر مصممة للمطابخ التجارية. تبرّد وتغلق الزيوت والدهون المشتعلة، مع أنبوب طويل للتطبيق الآمن من مسافة.' },
@@ -386,7 +385,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'optical-smoke-detector', sku: 'DET-OPT-1', category: 'smoke-heat-detectors', brand: 'honeywell',
-    price: '34.50', featured: true, imageQuery: 'smoke detector', images: 2,
+ featured: true, imageQuery: 'smoke detector', images: 2,
     tr: {
       en: { name: 'Optical Smoke Detector', shortDescription: 'Photoelectric detector with fast response to smouldering fires.', description: 'A photoelectric optical smoke detector that responds quickly to slow, smouldering fires common in homes and offices. Low-profile design, drift compensation and a clear status LED.' },
       ar: { name: 'كاشف دخان بصري', shortDescription: 'كاشف ضوئي باستجابة سريعة للحرائق المشتعلة ببطء.', description: 'كاشف دخان بصري كهروضوئي يستجيب بسرعة للحرائق البطيئة الشائعة في المنازل والمكاتب. تصميم منخفض وتعويض الانحراف ومؤشر LED واضح.' },
@@ -395,7 +394,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'rate-of-rise-heat-detector', sku: 'DET-HEAT-1', category: 'smoke-heat-detectors', brand: 'bosch',
-    price: '29.00', imageQuery: 'smoke detector', images: 1,
+ imageQuery: 'smoke detector', images: 1,
     tr: {
       en: { name: 'Rate-of-Rise Heat Detector', shortDescription: 'Reliable detection where smoke detectors are unsuitable.', description: 'A rate-of-rise heat detector for kitchens, garages and dusty areas where smoke detectors would false-alarm. Triggers on rapid temperature increase or a fixed threshold.' },
       ar: { name: 'كاشف حرارة بمعدل الارتفاع', shortDescription: 'كشف موثوق حيث لا تصلح كواشف الدخان.', description: 'كاشف حرارة بمعدل الارتفاع للمطابخ والكراجات والمناطق المغبرّة حيث تطلق كواشف الدخان إنذارات كاذبة. يعمل عند الارتفاع السريع للحرارة أو عتبة ثابتة.' },
@@ -404,7 +403,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'multi-sensor-detector', sku: 'DET-MULTI-1', category: 'smoke-heat-detectors', brand: 'siemens',
-    price: '46.00', featured: true, imageQuery: 'smoke detector', images: 2,
+ featured: true, imageQuery: 'smoke detector', images: 2,
     tr: {
       en: { name: 'Combined Smoke & Heat Detector', shortDescription: 'Multi-sensor head for accurate detection with fewer false alarms.', description: 'A combined optical and heat multi-sensor detector that intelligently weighs both signals to detect real fires faster while rejecting steam, dust and cooking fumes.' },
       ar: { name: 'كاشف دخان وحرارة مدمج', shortDescription: 'رأس متعدد المستشعرات لكشف دقيق وإنذارات كاذبة أقل.', description: 'كاشف متعدد المستشعرات يجمع بين البصري والحراري ويوازن الإشارتين بذكاء لاكتشاف الحرائق الحقيقية بأسرع وقت مع تجاهل البخار والغبار وأبخرة الطهي.' },
@@ -413,7 +412,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'addressable-control-panel', sku: 'PNL-ADR-2', category: 'fire-alarm-systems', brand: 'notifier',
-    price: '1290.00', featured: true, imageQuery: 'fire alarm panel', images: 2,
+ featured: true, imageQuery: 'fire alarm panel', images: 2,
     tr: {
       en: { name: 'Addressable Fire Alarm Panel', shortDescription: '2-loop intelligent panel addressing up to 318 devices.', description: 'A 2-loop addressable fire alarm control panel supporting up to 318 devices with pinpoint location reporting, cause-and-effect programming and a backlit display. The backbone of any modern fire system.' },
       ar: { name: 'لوحة إنذار حريق بالعنونة', shortDescription: 'لوحة ذكية بحلقتين تدعم حتى 318 جهازاً.', description: 'لوحة تحكم إنذار حريق بالعنونة بحلقتين تدعم حتى 318 جهازاً مع تحديد دقيق للموقع وبرمجة السبب والأثر وشاشة مضيئة. العمود الفقري لأي نظام حريق حديث.' },
@@ -422,7 +421,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'conventional-8-zone-panel', sku: 'PNL-CONV-8', category: 'fire-alarm-systems', brand: 'honeywell',
-    price: '380.00', imageQuery: 'fire alarm panel', images: 1,
+ imageQuery: 'fire alarm panel', images: 1,
     tr: {
       en: { name: 'Conventional 8-Zone Panel', shortDescription: 'Cost-effective panel for small and medium buildings.', description: 'An 8-zone conventional fire alarm panel with integrated battery charger, fault monitoring and simple commissioning — ideal for shops, clinics and small offices.' },
       ar: { name: 'لوحة تقليدية 8 مناطق', shortDescription: 'لوحة اقتصادية للمباني الصغيرة والمتوسطة.', description: 'لوحة إنذار حريق تقليدية بـ 8 مناطق مع شاحن بطارية مدمج ومراقبة الأعطال وتشغيل بسيط — مثالية للمحلات والعيادات والمكاتب الصغيرة.' },
@@ -431,7 +430,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'manual-call-point', sku: 'MCP-BG-1', category: 'fire-alarm-systems', brand: 'bosch',
-    price: '18.00', imageQuery: 'fire alarm', images: 1,
+ imageQuery: 'fire alarm', images: 1,
     tr: {
       en: { name: 'Manual Call Point', shortDescription: 'Break-glass call point for instant manual alarm.', description: 'A resettable break-glass manual call point that lets occupants raise the alarm instantly. Weather-resistant variants available for outdoor and stairwell use.' },
       ar: { name: 'نقطة نداء يدوية', shortDescription: 'نقطة نداء بكسر الزجاج للإنذار اليدوي الفوري.', description: 'نقطة نداء يدوية قابلة لإعادة الضبط بكسر الزجاج تتيح للأشخاص إطلاق الإنذار فوراً. تتوفر إصدارات مقاومة للطقس للاستخدام الخارجي وفي السلالم.' },
@@ -440,7 +439,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'sounder-beacon', sku: 'SND-BCN-1', category: 'fire-alarm-systems', brand: 'siemens',
-    price: '27.50', imageQuery: 'fire alarm', images: 1,
+ imageQuery: 'fire alarm', images: 1,
     tr: {
       en: { name: 'Combined Sounder & Beacon', shortDescription: '100dB sounder with high-intensity strobe.', description: 'A combined sounder and beacon delivering a 100dB alarm tone with a bright synchronised strobe for clear notification in noisy or hearing-impaired environments.' },
       ar: { name: 'جرس وضوء تنبيه مدمج', shortDescription: 'جرس 100 ديسيبل مع ضوء وامض عالي الشدة.', description: 'جرس وضوء تنبيه مدمج يصدر نغمة إنذار 100 ديسيبل مع ضوء وامض متزامن للتنبيه الواضح في البيئات الصاخبة أو لضعاف السمع.' },
@@ -449,7 +448,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'pendent-sprinkler-head', sku: 'SPK-PEN-1', category: 'sprinkler-systems', brand: 'viking',
-    price: '6.50', featured: true, imageQuery: 'fire sprinkler', images: 2,
+ featured: true, imageQuery: 'fire sprinkler', images: 2,
     tr: {
       en: { name: 'Pendent Sprinkler Head', shortDescription: 'Quick-response glass-bulb sprinkler, 68°C.', description: 'A quick-response pendent sprinkler head with a 68°C glass bulb and chrome finish. Factory-tested for reliable activation and even water distribution across the protected area.' },
       ar: { name: 'رأس رشاش معلق', shortDescription: 'رشاش سريع الاستجابة بأنبوب زجاجي، 68 درجة مئوية.', description: 'رأس رشاش معلق سريع الاستجابة بأنبوب زجاجي 68 درجة مئوية وطلاء كروم. مُختبر مصنعياً لتفعيل موثوق وتوزيع متساوٍ للماء على المنطقة المحمية.' },
@@ -458,7 +457,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'wet-riser-valve', sku: 'SPK-WRV-1', category: 'sprinkler-systems', brand: 'tyco',
-    price: '210.00', imageQuery: 'fire sprinkler', images: 1,
+ imageQuery: 'fire sprinkler', images: 1,
     tr: {
       en: { name: 'Wet Riser Alarm Valve', shortDescription: 'Flanged alarm valve for wet sprinkler systems.', description: 'A flanged wet alarm valve that holds water under pressure and triggers a water-motor alarm on flow. Includes trim set and retard chamber for false-alarm prevention.' },
       ar: { name: 'صمام إنذار للأنابيب الرطبة', shortDescription: 'صمام إنذار بشفة لأنظمة الرشاشات الرطبة.', description: 'صمام إنذار رطب بشفة يحفظ الماء تحت الضغط ويشغّل إنذاراً مائياً عند التدفق. يتضمن مجموعة تركيب وغرفة تأخير لمنع الإنذارات الكاذبة.' },
@@ -467,7 +466,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'fire-hose-reel-30m', sku: 'HOSE-RL-30', category: 'hoses-hydrants', brand: 'naffco',
-    price: '155.00', featured: true, imageQuery: 'fire hose reel', images: 2,
+ featured: true, imageQuery: 'fire hose reel', images: 2,
     tr: {
       en: { name: 'Fire Hose Reel 30m', shortDescription: 'Swinging hose reel with 30m of 19mm hose.', description: 'A wall-mounted swinging fire hose reel with 30 metres of 19mm rubber hose and an adjustable jet/spray nozzle. Powder-coated steel drum for years of dependable service.' },
       ar: { name: 'بكرة خرطوم حريق 30 م', shortDescription: 'بكرة خرطوم متأرجحة بطول 30 م وقطر 19 مم.', description: 'بكرة خرطوم حريق متأرجحة مثبتة على الجدار بطول 30 متراً وخرطوم مطاطي 19 مم وفوهة قابلة للتعديل. أسطوانة فولاذية مطلية للخدمة الموثوقة لسنوات.' },
@@ -476,7 +475,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'landing-valve-hydrant', sku: 'HYD-LV-1', category: 'hoses-hydrants', brand: 'naffco',
-    price: '120.00', imageQuery: 'fire hydrant', images: 1,
+ imageQuery: 'fire hydrant', images: 1,
     tr: {
       en: { name: 'Landing Valve & Hydrant', shortDescription: 'Oblique landing valve for wet and dry risers.', description: 'A 2.5-inch oblique landing valve with instantaneous outlet for fire-brigade connection on wet and dry rising mains. Gunmetal body and cap with chain.' },
       ar: { name: 'صمام إنزال وفوهة حريق', shortDescription: 'صمام إنزال مائل للأنابيب الرطبة والجافة.', description: 'صمام إنزال مائل 2.5 بوصة بمخرج فوري لتوصيل فرق الإطفاء على الأنابيب الصاعدة الرطبة والجافة. جسم وغطاء من المعدن مع سلسلة.' },
@@ -485,7 +484,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'led-emergency-exit-sign', sku: 'EML-EXIT-1', category: 'emergency-lighting-signage', brand: 'honeywell',
-    price: '38.00', imageQuery: 'emergency exit sign', images: 2,
+ imageQuery: 'emergency exit sign', images: 2,
     tr: {
       en: { name: 'LED Emergency Exit Sign', shortDescription: 'Maintained running-man exit sign, 3-hour backup.', description: 'A slim LED running-man exit sign with maintained/non-maintained operation and a 3-hour battery backup. Double-sided blades and pictograms included for any mounting position.' },
       ar: { name: 'لافتة خروج طوارئ LED', shortDescription: 'لافتة خروج مضيئة مع احتياطي 3 ساعات.', description: 'لافتة خروج LED نحيفة بتشغيل دائم/غير دائم واحتياطي بطارية 3 ساعات. تتضمن شفرات مزدوجة الجوانب ورموزاً لأي وضع تركيب.' },
@@ -494,7 +493,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'emergency-bulkhead-light', sku: 'EML-BLK-1', category: 'emergency-lighting-signage', brand: 'bosch',
-    price: '32.00', imageQuery: 'emergency light', images: 1,
+ imageQuery: 'emergency light', images: 1,
     tr: {
       en: { name: 'Emergency Bulkhead Light', shortDescription: 'IP65 maintained luminaire for escape routes.', description: 'A robust IP65-rated emergency bulkhead luminaire for corridors, stairwells and external escape routes. Self-test versions available to automate compliance checks.' },
       ar: { name: 'إضاءة طوارئ محصّنة', shortDescription: 'وحدة إضاءة IP65 لمسارات الهروب.', description: 'وحدة إضاءة طوارئ محصّنة بتصنيف IP65 للممرات والسلالم ومسارات الهروب الخارجية. تتوفر نسخ ذاتية الاختبار لأتمتة فحوص الامتثال.' },
@@ -503,7 +502,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'fm200-clean-agent-system', sku: 'SUP-FM200-1', category: 'suppression-systems', brand: 'kidde',
-    price: '2450.00', featured: true, imageQuery: 'fire suppression system', images: 2,
+ featured: true, imageQuery: 'fire suppression system', images: 2,
     tr: {
       en: { name: 'FM-200 Clean Agent System', shortDescription: 'Waterless gas suppression for critical rooms.', description: 'A complete FM-200 (HFC-227ea) clean-agent suppression system that extinguishes fire in seconds without water or residue. Ideal for data centres, archives and electrical rooms.' },
       ar: { name: 'نظام إخماد بالغاز النظيف FM-200', shortDescription: 'إخماد غازي بدون ماء للغرف الحرجة.', description: 'نظام إخماد كامل بالغاز النظيف FM-200 (HFC-227ea) يخمد الحريق في ثوانٍ دون ماء أو بقايا. مثالي لمراكز البيانات والأرشيف والغرف الكهربائية.' },
@@ -512,7 +511,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'kitchen-suppression-system', sku: 'SUP-KIT-1', category: 'suppression-systems', brand: 'tyco',
-    price: '1850.00', imageQuery: 'commercial kitchen', images: 1,
+ imageQuery: 'commercial kitchen', images: 1,
     tr: {
       en: { name: 'Kitchen Suppression System', shortDescription: 'Wet-chemical system for commercial cooking lines.', description: 'A pre-engineered wet-chemical suppression system protecting hoods, ducts and cooking appliances. Automatic detection with manual pull-station and gas shut-off interface.' },
       ar: { name: 'نظام إخماد المطابخ', shortDescription: 'نظام كيميائي رطب لخطوط الطهي التجارية.', description: 'نظام إخماد كيميائي رطب مُهندس مسبقاً يحمي الشفاطات والمجاري وأجهزة الطهي. كشف أوتوماتيكي مع محطة سحب يدوية وواجهة لقطع الغاز.' },
@@ -521,7 +520,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     slug: 'firefighter-ppe-kit', sku: 'PPE-KIT-1', category: 'safety-equipment-ppe', brand: 'naffco',
-    price: '340.00', featured: true, imageQuery: 'firefighter helmet', images: 3,
+ featured: true, imageQuery: 'firefighter helmet', images: 3,
     tr: {
       en: { name: 'Firefighter PPE Kit', shortDescription: 'Helmet, gloves, hood and turnout coat set.', description: 'A complete firefighter personal protective equipment kit including an EN-certified helmet, flash hood, structural gloves and a flame-resistant turnout coat. Sized for professional and volunteer crews.' },
       ar: { name: 'طقم معدات وقاية لرجل الإطفاء', shortDescription: 'خوذة وقفازات وغطاء رأس وسترة إطفاء.', description: 'طقم كامل من معدات الوقاية الشخصية لرجل الإطفاء يشمل خوذة معتمدة EN وغطاء رأس وقفازات هيكلية وسترة إطفاء مقاومة للهب. بمقاسات للفرق المحترفة والمتطوعة.' },
@@ -531,40 +530,40 @@ const PRODUCTS: SeedProduct[] = [
 ];
 
 // Extra variants keyed by product slug, so most products show a variant selector.
-const EXTRA_VARIANTS: Record<string, Array<{ sku: string; price: string; attrs: Record<string, string> }>> = {
+const EXTRA_VARIANTS: Record<string, Array<{ sku: string; attrs: Record<string, string> }>> = {
   'co2-extinguisher-5kg': [
-    { sku: 'EXT-CO2-2', price: '59.00', attrs: { Capacity: '2 kg', 'Fire Rating': '34B' } },
-    { sku: 'EXT-CO2-5', price: '89.00', attrs: { Capacity: '5 kg', 'Fire Rating': '89B' } },
+    { sku: 'EXT-CO2-2', attrs: { Capacity: '2 kg', 'Fire Rating': '34B' } },
+    { sku: 'EXT-CO2-5', attrs: { Capacity: '5 kg', 'Fire Rating': '89B' } },
   ],
   'foam-extinguisher-9l': [
-    { sku: 'EXT-FOAM-6', price: '54.00', attrs: { Capacity: '6 L', 'Fire Rating': '21A 144B' } },
-    { sku: 'EXT-FOAM-9', price: '64.00', attrs: { Capacity: '9 L', 'Fire Rating': '27A 183B' } },
+    { sku: 'EXT-FOAM-6', attrs: { Capacity: '6 L', 'Fire Rating': '21A 144B' } },
+    { sku: 'EXT-FOAM-9', attrs: { Capacity: '9 L', 'Fire Rating': '27A 183B' } },
   ],
   'wet-chemical-extinguisher-6l': [
-    { sku: 'EXT-WET-3', price: '59.00', attrs: { Capacity: '3 L', 'Fire Rating': '13A 40F' } },
-    { sku: 'EXT-WET-6', price: '79.00', attrs: { Capacity: '6 L', 'Fire Rating': '25A 75F' } },
+    { sku: 'EXT-WET-3', attrs: { Capacity: '3 L', 'Fire Rating': '13A 40F' } },
+    { sku: 'EXT-WET-6', attrs: { Capacity: '6 L', 'Fire Rating': '25A 75F' } },
   ],
   'optical-smoke-detector': [
-    { sku: 'DET-OPT-CONV', price: '34.50', attrs: { Type: 'Conventional', Mount: 'Ceiling' } },
-    { sku: 'DET-OPT-ADR', price: '42.00', attrs: { Type: 'Addressable', Mount: 'Ceiling' } },
+    { sku: 'DET-OPT-CONV', attrs: { Type: 'Conventional', Mount: 'Ceiling' } },
+    { sku: 'DET-OPT-ADR', attrs: { Type: 'Addressable', Mount: 'Ceiling' } },
   ],
   'pendent-sprinkler-head': [
-    { sku: 'SPK-PEN-57', price: '6.50', attrs: { Temperature: '57 °C', Finish: 'Chrome' } },
-    { sku: 'SPK-PEN-68', price: '6.50', attrs: { Temperature: '68 °C', Finish: 'Chrome' } },
-    { sku: 'SPK-PEN-93', price: '7.20', attrs: { Temperature: '93 °C', Finish: 'Brass' } },
+    { sku: 'SPK-PEN-57', attrs: { Temperature: '57 °C', Finish: 'Chrome' } },
+    { sku: 'SPK-PEN-68', attrs: { Temperature: '68 °C', Finish: 'Chrome' } },
+    { sku: 'SPK-PEN-93', attrs: { Temperature: '93 °C', Finish: 'Brass' } },
   ],
   'fire-hose-reel-30m': [
-    { sku: 'HOSE-RL-20', price: '135.00', attrs: { Length: '20 m', Diameter: '19 mm' } },
-    { sku: 'HOSE-RL-30', price: '155.00', attrs: { Length: '30 m', Diameter: '19 mm' } },
+    { sku: 'HOSE-RL-20', attrs: { Length: '20 m', Diameter: '19 mm' } },
+    { sku: 'HOSE-RL-30', attrs: { Length: '30 m', Diameter: '19 mm' } },
   ],
   'led-emergency-exit-sign': [
-    { sku: 'EML-EXIT-S', price: '38.00', attrs: { Type: 'Single-sided', Backup: '3 hour' } },
-    { sku: 'EML-EXIT-D', price: '46.00', attrs: { Type: 'Double-sided', Backup: '3 hour' } },
+    { sku: 'EML-EXIT-S', attrs: { Type: 'Single-sided', Backup: '3 hour' } },
+    { sku: 'EML-EXIT-D', attrs: { Type: 'Double-sided', Backup: '3 hour' } },
   ],
   'firefighter-ppe-kit': [
-    { sku: 'PPE-KIT-M', price: '340.00', attrs: { Size: 'Medium' } },
-    { sku: 'PPE-KIT-L', price: '340.00', attrs: { Size: 'Large' } },
-    { sku: 'PPE-KIT-XL', price: '355.00', attrs: { Size: 'X-Large' } },
+    { sku: 'PPE-KIT-M', attrs: { Size: 'Medium' } },
+    { sku: 'PPE-KIT-L', attrs: { Size: 'Large' } },
+    { sku: 'PPE-KIT-XL', attrs: { Size: 'X-Large' } },
   ],
 };
 
@@ -587,7 +586,6 @@ async function seedProducts(categoryIds: Record<string, string>, brandIds: Recor
           sku: p.sku,
           categoryId: categoryIds[p.category],
           brandId: brandIds[p.brand],
-          price: p.price,
           status: PublishStatus.PUBLISHED,
           isFeatured: Boolean(p.featured),
           sortOrder: order,
@@ -605,7 +603,6 @@ async function seedProducts(categoryIds: Record<string, string>, brandIds: Recor
             data: {
               productId,
               sku: v.sku,
-              price: v.price,
               sortOrder: vi,
               attributes: {
                 create: Object.entries(v.attrs).map(([key, value], ai) => ({ key, value, sortOrder: ai })),

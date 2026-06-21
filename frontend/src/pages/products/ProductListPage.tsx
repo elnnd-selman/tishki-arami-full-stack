@@ -173,7 +173,6 @@ export function ProductListPage() {
                     <th>{t('product.sku')}</th>
                     <th>{t('product.category')}</th>
                     <th>{t('product.brand')}</th>
-                    <th>{t('product.price')}</th>
                     <th>{t('common.status')}</th>
                     <th style={{ width: 110, textAlign: 'end' }}>{t('common.actions')}</th>
                   </tr>
@@ -213,7 +212,6 @@ export function ProductListPage() {
                         <td className="muted">{p.sku ?? '-'}</td>
                         <td>{p.category ? localizedName(p.category.translations, i18n.language) : '-'}</td>
                         <td>{p.brand ? localizedName(p.brand.translations, i18n.language) : '-'}</td>
-                        <td>{p.price != null ? `${p.price.toFixed(2)} ${p.currency}` : '-'}</td>
                         <td>
                           <StatusBadge status={p.status} />
                         </td>

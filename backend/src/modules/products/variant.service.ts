@@ -33,8 +33,6 @@ export async function createVariant(productId: string, input: CreateVariantInput
       data: {
         productId,
         sku: input.sku ?? null,
-        price: input.price ?? null,
-        currency: input.currency ?? 'USD',
         isActive: input.isActive ?? true,
         sortOrder: input.sortOrder ?? count,
         attributes: {
@@ -68,8 +66,6 @@ export async function updateVariant(productId: string, variantId: string, input:
       where: { id: variantId },
       data: {
         ...(input.sku !== undefined ? { sku: input.sku } : {}),
-        ...(input.price !== undefined ? { price: input.price } : {}),
-        ...(input.currency !== undefined ? { currency: input.currency } : {}),
         ...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
         ...(input.sortOrder !== undefined ? { sortOrder: input.sortOrder } : {}),
       },
@@ -91,8 +87,21 @@ export async function updateVariant(productId: string, variantId: string, input:
 
 export async function deleteVariant(productId: string, variantId: string) {
   await ensureVariant(productId, variantId);
+  // Capture image paths before deleting so we can remove the files from disk.
+  const v = await prisma.productVariant.findUnique({
+    where: { id: variantId },
+    select: { imagePath: true, imageWebpPath: true, imageThumbnailPath: true, imageThumbnailWebpPath: true },
+  });
   // Cascade removes the variant's attribute rows.
   await prisma.productVariant.delete({ where: { id: variantId } });
+  if (v?.imagePath) {
+    await deleteImageVariants({
+      path: v.imagePath,
+      webpPath: v.imageWebpPath,
+      thumbnailPath: v.imageThumbnailPath,
+      thumbnailWebpPath: v.imageThumbnailWebpPath,
+    });
+  }
   return getProduct(productId);
 }
 

@@ -31,8 +31,6 @@ export interface VariantAttribute {
 export interface ProductVariant {
   id: string;
   sku: string | null;
-  price: number | null;
-  currency: string;
   isActive: boolean;
   image: { url: string; webpUrl: string | null; thumbnailUrl: string | null; thumbnailWebpUrl: string | null } | null;
   attributes: VariantAttribute[];
@@ -48,8 +46,6 @@ export interface Product {
   id: string;
   slug: string;
   sku: string | null;
-  price: number | null;
-  currency: string;
   isFeatured: boolean;
   category: Ref | null;
   brand: Ref | null;

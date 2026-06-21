@@ -659,25 +659,26 @@
 /* Variant cards — interactive clickable options */
 .variant-list { display: flex; flex-direction: column; gap: 8px; }
 .variant-card {
-  display: flex; align-items: center; gap: 12px; width: 100%; text-align: start;
-  padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border);
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: start;
+  padding: 14px; border-radius: 12px; border: 1.5px solid var(--border);
   background: #fff; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
 }
 .variant-card:hover { border-color: var(--blue-300); }
 .variant-card.active { border-color: var(--primary); box-shadow: 0 0 0 3px var(--blue-100); }
-.variant-card-img { width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+.variant-card-img { width: 52px; height: 52px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
 .variant-card-img img { width: 100%; height: 100%; object-fit: cover; }
 .variant-card-body { flex: 1; min-width: 0; }
-.variant-attrs { display: flex; flex-wrap: wrap; gap: 6px; }
-.variant-attr-tag { display: inline-flex; align-items: center; gap: 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--blue-200); font-size: 12px; font-weight: 600; }
-.variant-attr-key { background: var(--blue-100); color: var(--blue-800); padding: 2px 7px; font-weight: 700; }
-.variant-attr-val { color: var(--slate-700); padding: 2px 8px; }
-.variant-sku-label { font-size: 11px; color: var(--muted); font-family: monospace; margin-top: 4px; display: block; }
-.variant-card-price { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-.variant-price-num { font-size: 15px; font-weight: 800; color: var(--primary); }
-.variant-currency { font-size: 12px; font-weight: 600; }
-.variant-price-contact { font-size: 11px; color: var(--muted); }
-.variant-check-mark { color: var(--primary); opacity: 0; transition: opacity 0.15s; }
+.variant-attr-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.variant-attr-table tr { border-bottom: 1px solid var(--border); }
+.variant-attr-table tr:last-child { border-bottom: none; }
+.variant-attr-table th {
+  text-align: start; font-size: 12px; font-weight: 700; color: var(--blue-800);
+  background: var(--blue-50); padding: 6px 10px; white-space: nowrap; width: 40%;
+  border-inline-end: 1px solid var(--border);
+}
+.variant-attr-table td { font-size: 13px; font-weight: 600; color: var(--slate-700); padding: 6px 10px; }
+.variant-sku-label { font-size: 11px; color: var(--muted); font-family: monospace; margin-top: 6px; display: block; }
+.variant-check-mark { color: var(--primary); opacity: 0; transition: opacity 0.15s; flex-shrink: 0; align-self: center; }
 .variant-card.active .variant-check-mark { opacity: 1; }
 
 .spec-list { display: grid; gap: 2px; }

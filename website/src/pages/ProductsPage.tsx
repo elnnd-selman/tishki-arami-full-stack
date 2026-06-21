@@ -140,7 +140,6 @@ export function ProductsPage() {
                   <option value="newest">{t('catalog.sortNewest')}</option>
                   <option value="oldest">{t('catalog.sortOldest')}</option>
                   <option value="name">{t('catalog.sortNameAsc')}</option>
-                  <option value="price">{t('catalog.sortPriceAsc')}</option>
                 </select>
                 {data && <span className="result-count">{t('common.results', { count: data.meta.total })}</span>}
               </div>

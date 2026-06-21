@@ -86,11 +86,6 @@ export function VariantManager({ product }: { product: Product }) {
                 </div>
                 <div className="variant-meta">
                   {v.sku && <span className="muted text-sm">{v.sku}</span>}
-                  {v.price != null && (
-                    <span className="variant-price">
-                      {v.price.toFixed(2)} {v.currency}
-                    </span>
-                  )}
                   <span className={`badge ${v.isActive ? 'badge-green' : 'badge-gray'}`}>
                     {v.isActive ? t('common.active') : t('common.inactive')}
                   </span>

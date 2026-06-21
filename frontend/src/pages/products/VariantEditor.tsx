@@ -35,8 +35,6 @@ export function VariantEditor({ productId, variant, onClose }: Props) {
   const newRow = (key = '', value = ''): AttrRow => ({ uid: ++uidRef.current, key, value });
 
   const [sku, setSku] = useState('');
-  const [price, setPrice] = useState('');
-  const [currency, setCurrency] = useState('USD');
   const [isActive, setIsActive] = useState(true);
   const [attrs, setAttrs] = useState<AttrRow[]>(() => [newRow()]);
   const [error, setError] = useState<string | null>(null);
@@ -44,8 +42,6 @@ export function VariantEditor({ productId, variant, onClose }: Props) {
   useEffect(() => {
     if (variant) {
       setSku(variant.sku ?? '');
-      setPrice(variant.price != null ? String(variant.price) : '');
-      setCurrency(variant.currency);
       setIsActive(variant.isActive);
       setAttrs(
         variant.attributes.length
@@ -99,8 +95,6 @@ export function VariantEditor({ productId, variant, onClose }: Props) {
         variantId: variant?.id,
         body: {
           sku: sku.trim() || null,
-          price: price === '' ? null : Number(price),
-          currency: currency || 'USD',
           isActive,
           attributes: cleaned,
         },
@@ -130,19 +124,9 @@ export function VariantEditor({ productId, variant, onClose }: Props) {
             </div>
           )}
 
-          <div className="grid-3">
-            <div className="field">
-              <label className="label">{t('product.sku')}</label>
-              <input className="input" value={sku} onChange={(e) => setSku(e.target.value)} />
-            </div>
-            <div className="field">
-              <label className="label">{t('product.price')}</label>
-              <input className="input" type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} />
-            </div>
-            <div className="field">
-              <label className="label">{t('product.currency')}</label>
-              <input className="input" maxLength={3} value={currency} onChange={(e) => setCurrency(e.target.value.toUpperCase())} />
-            </div>
+          <div className="field">
+            <label className="label">{t('product.sku')}</label>
+            <input className="input" value={sku} onChange={(e) => setSku(e.target.value)} />
           </div>
 
           <div className="field">

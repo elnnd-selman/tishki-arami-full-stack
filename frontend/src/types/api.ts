@@ -69,8 +69,6 @@ export interface ImageUrls {
 export interface ProductVariant {
   id: string;
   sku: string | null;
-  price: number | null;
-  currency: string;
   isActive: boolean;
   sortOrder: number;
   attributes: VariantAttribute[];
@@ -84,8 +82,6 @@ export interface Product {
   status: PublishStatus;
   isFeatured: boolean;
   sortOrder: number;
-  price: number | null;
-  currency: string;
   categoryId: string;
   brandId: string | null;
   category: CategoryRef | null;

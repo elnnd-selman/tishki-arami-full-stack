@@ -29,8 +29,6 @@ interface FormState {
   status: PublishStatus;
   isFeatured: boolean;
   sortOrder: number;
-  price: string;
-  currency: string;
   translations: Record<LocaleKey, Translation>;
 }
 
@@ -51,8 +49,6 @@ function emptyForm(): FormState {
     status: 'DRAFT',
     isFeatured: false,
     sortOrder: 0,
-    price: '',
-    currency: 'USD',
     translations: { en: emptyTranslation(), ar: emptyTranslation(), ku: emptyTranslation() },
   };
 }
@@ -85,8 +81,6 @@ export function ProductFormPage() {
         status: product.status,
         isFeatured: product.isFeatured,
         sortOrder: product.sortOrder,
-        price: product.price != null ? String(product.price) : '',
-        currency: product.currency,
         translations: {
           en: { ...emptyTranslation(), ...(product.translations.en ?? {}) },
           ar: { ...emptyTranslation(), ...(product.translations.ar ?? {}) },
@@ -143,8 +137,6 @@ export function ProductFormPage() {
       status: form.status,
       isFeatured: form.isFeatured,
       sortOrder: Number(form.sortOrder) || 0,
-      price: form.price === '' ? null : Number(form.price),
-      currency: form.currency || 'USD',
       translations: buildTranslations(),
     };
   }
@@ -367,29 +359,6 @@ export function ProductFormPage() {
                   <option value="PUBLISHED">{t('status.PUBLISHED')}</option>
                   <option value="ARCHIVED">{t('status.ARCHIVED')}</option>
                 </select>
-              </div>
-
-              <div className="grid-2">
-                <div className="field">
-                  <label className="label">{t('product.price')}</label>
-                  <input
-                    className="input"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={form.price}
-                    onChange={(e) => setField('price', e.target.value)}
-                  />
-                </div>
-                <div className="field">
-                  <label className="label">{t('product.currency')}</label>
-                  <input
-                    className="input"
-                    maxLength={3}
-                    value={form.currency}
-                    onChange={(e) => setField('currency', e.target.value.toUpperCase())}
-                  />
-                </div>
               </div>
 
               <div className="field">

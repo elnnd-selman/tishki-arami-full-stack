@@ -49,9 +49,6 @@ export async function listProducts(query: ProductQuery) {
   const sortDir: 'asc' | 'desc' = query.sortDir === 'asc' ? 'asc' : 'desc';
   let orderBy: Prisma.ProductOrderByWithRelationInput;
   switch (query.sortBy) {
-    case 'price':
-      orderBy = { price: 'asc' };
-      break;
     case 'name':
       orderBy = { slug: 'asc' };
       break;

@@ -52,7 +52,6 @@ function productPayload(overrides: Record<string, unknown> = {}) {
     categoryId,
     brandId,
     status: 'PUBLISHED',
-    price: 19.99,
     translations: {
       en: { name: 'LED Panel', shortDescription: 'A bright panel' },
       ar: { name: 'لوحة ليد', shortDescription: 'لوحة ساطعة' },
@@ -76,7 +75,6 @@ describe('Products - CRUD', () => {
   it('creates a product and stores it (with all translations) in the database', async () => {
     const product = await createProduct();
     expect(product.slug).toBe('led-panel');
-    expect(product.price).toBe(19.99);
 
     const inDb = await prisma.product.findUnique({
       where: { id: product.id },
@@ -114,8 +112,6 @@ describe('Products - CRUD', () => {
         status: 'DRAFT',
         isFeatured: true,
         sortOrder: 5,
-        price: 99.5,
-        currency: 'EUR',
         translations: { en: { name: 'Updated Panel' }, ku: { name: 'نوێکراوە' } },
       });
     expect(res.status).toBe(200);
@@ -128,8 +124,6 @@ describe('Products - CRUD', () => {
     expect(inDb!.status).toBe('DRAFT');
     expect(inDb!.isFeatured).toBe(true);
     expect(inDb!.sortOrder).toBe(5);
-    expect(Number(inDb!.price)).toBe(99.5);
-    expect(inDb!.currency).toBe('EUR');
     const en = inDb!.translations.find((t) => t.locale === 'EN');
     const ku = inDb!.translations.find((t) => t.locale === 'KU');
     expect(en!.name).toBe('Updated Panel');
@@ -160,16 +154,16 @@ describe('Products - list, search, filter, pagination, sort', () => {
       categoryId: otherCat.id,
       brandId: null,
       isFeatured: true,
-      price: 5,
+      sortOrder: 1,
     });
     await createProduct(adminToken, {
       translations: { en: { name: 'Beta Lamp' }, ku: { name: 'چرای بێتا' } },
-      price: 50,
+      sortOrder: 3,
     });
     await createProduct(adminToken, {
       translations: { en: { name: 'Gamma Cable' } },
       status: 'DRAFT',
-      price: 15,
+      sortOrder: 2,
     });
   });
 
@@ -215,18 +209,18 @@ describe('Products - list, search, filter, pagination, sort', () => {
     expect(res.body.data[0].translations.en.name).toBe('Alpha Chair');
   });
 
-  it('sorts by price ascending and descending', async () => {
+  it('sorts by sortOrder ascending and descending', async () => {
     const asc = await request(app)
-      .get(`${API}/products?sortBy=price&sortDir=asc`)
+      .get(`${API}/products?sortBy=sortOrder&sortDir=asc`)
       .set(auth(adminToken));
-    const ascPrices = asc.body.data.map((p: { price: number }) => p.price);
-    expect(ascPrices).toEqual([...ascPrices].sort((a, b) => a - b));
+    const ascOrders = asc.body.data.map((p: { sortOrder: number }) => p.sortOrder);
+    expect(ascOrders).toEqual([...ascOrders].sort((a, b) => a - b));
 
     const desc = await request(app)
-      .get(`${API}/products?sortBy=price&sortDir=desc`)
+      .get(`${API}/products?sortBy=sortOrder&sortDir=desc`)
       .set(auth(adminToken));
-    const descPrices = desc.body.data.map((p: { price: number }) => p.price);
-    expect(descPrices).toEqual([...descPrices].sort((a, b) => b - a));
+    const descOrders = desc.body.data.map((p: { sortOrder: number }) => p.sortOrder);
+    expect(descOrders).toEqual([...descOrders].sort((a, b) => b - a));
   });
 });
 

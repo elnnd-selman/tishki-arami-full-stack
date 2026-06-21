@@ -69,8 +69,6 @@
     "sku": "رمز المنتج",
     "category": "الفئة",
     "brand": "العلامة التجارية",
-    "price": "السعر",
-    "currency": "العملة",
     "featured": "مميّز",
     "sortOrder": "ترتيب العرض",
     "shortDescription": "وصف مختصر",
@@ -186,5 +184,5 @@
     "quickActions": "إجراءات سريعة",
     "manageProducts": "إدارة المنتجات"
   },
-  "errors": { "generic": "حدث خطأ ما", "loadFailed": "فشل تحميل البيانات" }
+  "errors": { "generic": "حدث خطأ ما", "loadFailed": "فشل تحميل البيانات", "notFound": "غير موجود" }
 }

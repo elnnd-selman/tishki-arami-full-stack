@@ -33,7 +33,6 @@
     "noResultsDesc": "هەوڵبدە گەڕان یان فلتەرەکان بگۆڕیت.",
     "previous": "پێشوو",
     "next": "دواتر",
-    "contactForPrice": "بۆ نرخ پەیوەندی بکە",
     "getInTouch": "پەیوەندیمان پێوە بکە"
   },
   "hero": {
@@ -79,7 +78,6 @@
     "brand": "براند",
     "category": "هاوپۆل",
     "attribute": "جۆر",
-    "price": "نرخ",
     "requestQuote": "داوای نرخ بکە",
     "selectedVariant": "گۆڕاوی هەڵبژێردراو",
     "noImage": "وێنە نییە"
@@ -96,9 +94,7 @@
     "sort": "ڕیزکردن",
     "sortNewest": "نوێترین",
     "sortOldest": "کۆنترین",
-    "sortNameAsc": "ناو ئ-ی",
-    "sortPriceAsc": "نرخ: کەمەوە بۆ زۆر",
-    "sortPriceDesc": "نرخ: زۆرەوە بۆ کەم"
+    "sortNameAsc": "ناو ئ-ی"
   },
   "categories": {
     "title": "هاوپۆلەکان",

@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
+import fs from 'node:fs';
 import request from 'supertest';
 import type { Express } from 'express';
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/lib/prisma.js';
+import { toAbsolute } from '../src/services/image.service.js';
 import { Locale } from '@prisma/client';
 import { resetDb, resetCatalog, seedRbacAndUsers, login, auth, createCategory } from './helpers.js';
 
@@ -34,7 +36,6 @@ afterAll(async () => prisma.$disconnect());
 
 const variantBody = (over = {}) => ({
   sku: 'VAR-1',
-  price: 12.5,
   attributes: [
     { key: 'Color', value: 'Red' },
     { key: 'Wattage', value: '60W' },
@@ -76,10 +77,9 @@ describe('Variants - CRUD with relational attributes', () => {
     const res = await request(app)
       .put(`${API}/products/${productId}/variants/${variantId}`)
       .set(auth(adminToken))
-      .send({ price: 20, attributes: [{ key: 'Color', value: 'Blue' }] });
+      .send({ attributes: [{ key: 'Color', value: 'Blue' }] });
     expect(res.status).toBe(200);
     const variant = res.body.data.variants[0];
-    expect(variant.price).toBe(20);
     expect(variant.attributes).toHaveLength(1);
     expect(variant.attributes[0].value).toBe('Blue');
 
@@ -177,5 +177,37 @@ describe('Variants - image upload', () => {
       .set(auth(viewerToken))
       .attach('image', TINY_PNG, { filename: 'test.png', contentType: 'image/png' });
     expect(res.status).toBe(403);
+  });
+
+  it('deletes the variant image files from disk when the variant is deleted', async () => {
+    const up = await request(app)
+      .post(`${API}/products/${productId}/variants/${variantId}/image`)
+      .set(auth(adminToken))
+      .attach('image', TINY_PNG, { filename: 'test.png', contentType: 'image/png' });
+    const variant = up.body.data.variants.find((v: any) => v.id === variantId);
+    const rel = new URL(variant.image.url).pathname.replace(/^\/[^/]+\//, '');
+    const abs = toAbsolute(rel);
+    expect(fs.existsSync(abs)).toBe(true);
+
+    const res = await request(app)
+      .delete(`${API}/products/${productId}/variants/${variantId}`)
+      .set(auth(adminToken));
+    expect(res.status).toBe(200);
+    expect(fs.existsSync(abs)).toBe(false);
+  });
+
+  it('deletes variant image files from disk when the parent product is deleted', async () => {
+    const up = await request(app)
+      .post(`${API}/products/${productId}/variants/${variantId}/image`)
+      .set(auth(adminToken))
+      .attach('image', TINY_PNG, { filename: 'test.png', contentType: 'image/png' });
+    const variant = up.body.data.variants.find((v: any) => v.id === variantId);
+    const rel = new URL(variant.image.url).pathname.replace(/^\/[^/]+\//, '');
+    const abs = toAbsolute(rel);
+    expect(fs.existsSync(abs)).toBe(true);
+
+    const res = await request(app).delete(`${API}/products/${productId}`).set(auth(adminToken));
+    expect(res.status).toBe(200);
+    expect(fs.existsSync(abs)).toBe(false);
   });
 });

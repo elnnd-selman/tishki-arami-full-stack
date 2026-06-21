@@ -70,9 +70,6 @@ export async function listProducts(query: ListProductsQuery) {
   const sortDir = query.sortDir ?? 'desc';
   let orderBy: Prisma.ProductOrderByWithRelationInput;
   switch (query.sortBy) {
-    case 'price':
-      orderBy = { price: sortDir };
-      break;
     case 'sortOrder':
       orderBy = { sortOrder: sortDir };
       break;
@@ -130,8 +127,6 @@ export async function createProduct(input: CreateProductInput) {
       status: input.status,
       isFeatured: input.isFeatured ?? false,
       sortOrder: input.sortOrder ?? 0,
-      price: input.price ?? null,
-      currency: input.currency ?? 'USD',
       translations: { create: translationRows(input.translations) },
     },
     include: productInclude,
@@ -152,8 +147,6 @@ export async function updateProduct(id: string, input: UpdateProductInput) {
   if (input.status !== undefined) data.status = input.status;
   if (input.isFeatured !== undefined) data.isFeatured = input.isFeatured;
   if (input.sortOrder !== undefined) data.sortOrder = input.sortOrder;
-  if (input.price !== undefined) data.price = input.price;
-  if (input.currency !== undefined) data.currency = input.currency;
   if (input.categoryId !== undefined) data.category = { connect: { id: input.categoryId } };
   if (input.brandId !== undefined) {
     data.brand = input.brandId ? { connect: { id: input.brandId } } : { disconnect: true };
@@ -186,15 +179,28 @@ export async function deleteProduct(id: string) {
   // Capture image paths BEFORE deleting, because the cascade will remove the rows.
   const product = await prisma.product.findUnique({
     where: { id },
-    include: { images: true },
+    include: { images: true, variants: true },
   });
   if (!product) throw new NotFoundError('Product not found');
 
-  // Delete the DB record first (cascade removes translations + image rows).
+  // Delete the DB record first (cascade removes translations + image + variant rows).
   await prisma.product.delete({ where: { id } });
 
-  // Then remove every physical file so no orphan files remain on disk.
-  await Promise.all(product.images.map((img) => deleteImageVariants(img)));
+  // Then remove every physical file so no orphan files remain on disk —
+  // both the product gallery images and any per-variant images.
+  await Promise.all([
+    ...product.images.map((img) => deleteImageVariants(img)),
+    ...product.variants
+      .filter((v) => v.imagePath)
+      .map((v) =>
+        deleteImageVariants({
+          path: v.imagePath,
+          webpPath: v.imageWebpPath,
+          thumbnailPath: v.imageThumbnailPath,
+          thumbnailWebpPath: v.imageThumbnailWebpPath,
+        }),
+      ),
+  ]);
 
   return { id };
 }
