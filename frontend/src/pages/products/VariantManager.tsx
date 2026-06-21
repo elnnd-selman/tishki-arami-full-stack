@@ -16,9 +16,13 @@ export function VariantManager({ product }: { product: Product }) {
   const { can } = useAuth();
   const canEdit = can('product.update');
 
-  const [editing, setEditing] = useState<ProductVariant | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [toDelete, setToDelete] = useState<ProductVariant | null>(null);
+
+  // Always derive from the latest product prop so image/field changes inside
+  // the modal are reflected immediately without needing to close and reopen.
+  const editing = editingId ? (product.variants.find((v) => v.id === editingId) ?? null) : null;
   const del = useDeleteVariant(product.id);
 
   async function confirmDelete() {
@@ -84,7 +88,7 @@ export function VariantManager({ product }: { product: Product }) {
                 </div>
                 {canEdit && (
                   <div className="row-actions">
-                    <button type="button" className="btn btn-ghost btn-icon" onClick={() => setEditing(v)} title={t('common.edit')}>
+                    <button type="button" className="btn btn-ghost btn-icon" onClick={() => setEditingId(v.id)} title={t('common.edit')}>
                       <IconEdit size={16} />
                     </button>
                     <Can permission="product.update">
@@ -106,7 +110,7 @@ export function VariantManager({ product }: { product: Product }) {
           variant={editing}
           onClose={() => {
             setCreating(false);
-            setEditing(null);
+            setEditingId(null);
           }}
         />
       )}
